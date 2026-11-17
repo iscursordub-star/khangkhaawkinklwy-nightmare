@@ -36,6 +36,10 @@ button:active{background:var(--ac)}button:disabled{opacity:.4}
 #rgl{position:absolute;left:0;right:0;top:84%;height:3px;background:#ffd24a;box-shadow:0 0 8px #ffd24a}
 #rgb{display:grid;grid-template-columns:repeat(5,1fr);gap:3px;margin-top:3px}
 #rgb button{text-align:center;padding:12px 0;font-weight:700;font-size:18px}
+#xh{position:fixed;left:50%;top:50%;width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:50%;background:rgba(255,255,255,.85);box-shadow:0 0 4px #000;pointer-events:none;z-index:4;display:none;transition:all .12s}
+#xh.on{width:18px;height:18px;margin:-9px 0 0 -9px;background:transparent;border:2px solid #ffd24a;box-shadow:0 0 8px #ffd24a}
+#xp{position:fixed;left:50%;top:calc(50% + 24px);transform:translateX(-50%);color:#ffe9b0;font-weight:700;text-shadow:0 1px 4px #000;pointer-events:none;z-index:4;display:none;font-size:16px;white-space:nowrap}
+#plh{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);color:#ddd;background:rgba(0,0,0,.6);padding:6px 12px;border-radius:8px;font-size:13px;pointer-events:none;z-index:4;display:none;white-space:nowrap}
 #fire{bottom:calc(150px + env(safe-area-inset-bottom,0px));display:none;font-size:22px;padding:16px 20px;z-index:5;background:rgba(200,30,40,.85)}
 .ov{position:fixed;inset:0;display:none;flex-direction:column;justify-content:center;gap:10px;padding:22px;background:rgba(0,0,0,.82);overflow-y:auto}
 .ov h2{margin:0;color:#c33;font-size:22px}.ov p{line-height:1.7;margin:0;white-space:pre-line}
@@ -61,16 +65,16 @@ button:active{background:var(--ac)}button:disabled{opacity:.4}
 <button id="act" class="b"></button><button id="tor" class="b">🔦 ไฟฉาย</button>
 <div id="start" class="ov" style="display:flex"><h2>ค้างคาวกินกล้วย</h2><p>คุณรับจ้างเฝ้าบ้านเก่าของครูระนาดผู้ล่วงลับ คืนนี้ฟ้ามืดสนิท ไฟในบ้านดับเกือบทั้งหลัง...
 
-🕹 เดิน: WASD / จอยสติ๊กซ้าย (ลากนิ้วครึ่งจอซ้าย)
-👀 มอง: ลากเมาส์ / ลากนิ้วครึ่งจอขวา
-✋ โต้ตอบ: ปุ่ม E หรือปุ่มสีแดงบนจอ
+🕹 เดิน: WASD (คอม) / จอยสติ๊กมุมซ้ายล่าง (มือถือ)
+👀 มอง: เมาส์ — คลิกที่หน้าจอเพื่อล็อคเมาส์ไว้กลางจอ (กด Esc เพื่อปล่อย/ตั้งค่า) / ลากนิ้ว (มือถือ)
+✋ โต้ตอบ: เล็งจุดกลางจอแล้วกด E หรือคลิกซ้าย / ปุ่มสีแดงบนจอ (มือถือ)
 🔦 ไฟฉาย: ปุ่ม F — เดินไปกดสวิตช์เพื่อเปิดไฟแต่ละห้อง
 🚪 ประตูเปิด/ปิดได้ — ห้องนอนล็อคจากข้างในได้
 🔊 เปิดเสียงไว้ด้วย</p><button id="go">เข้าบ้าน</button><button id="sk1">⏭ ข้ามตอนที่ 1 (ไปตอนที่ 2)</button><button id="sk4a">⏭ ข้ามไปตอนที่ 4 (ทางบ้าน)</button><button id="sk4b">⏭ ข้ามไปตอนที่ 4 (ทางโรงแรม)</button><button id="sk5">⏭ ข้ามไปตอนที่ 5 (เล่นคนเดียว)</button><button id="sk6">⏭ ข้ามไปตอนที่ 6 (ตอนจบ)</button><button id="mpbtn">🌐 มัลติเพลเยอร์ (เบต้า)</button></div>
 <div id="note" class="ov"><h2 id="nt"></h2><p id="nb"></p><button id="nc">ปิด</button></div>
 <div id="ch" class="ov"><h2>ขาซีดขาวหยุดอยู่ข้างเตียง...</h2><p>เธอกำลังโน้มตัวลงมา คุณจะเลือกอะไร?</p><div id="cb" style="display:flex;flex-direction:column;gap:10px"></div></div>
 <div id="end" class="ov"><h2 id="et"></h2><p id="eb"></p><button id="n2" style="display:none" onclick="ch2()">▶ ตอนที่ 2: เช้าวันใหม่</button><button id="n4" style="display:none" onclick="ch4go()">▶ ตอนที่ 4: ความลับที่ถูกซ่อนอยู่</button><button id="n5" style="display:none" onclick="ch5go()">▶ ตอนที่ 5: โรงเรียนมัธยมเก่า</button><button id="n6" style="display:none" onclick="ch6go()">▶ ตอนที่ 6: เพลงที่ไม่เคยจบ</button><button onclick="location.reload()">เล่นใหม่</button></div>
-<div id="clk"></div><div id="tm3"></div><div id="c4h" class="f" style="display:none;top:calc(31px + env(safe-area-inset-top,0px));font-size:14px;color:#9fe"></div>
+<div id="xh"></div><div id="xp"></div><div id="plh">🖱 คลิกที่หน้าจอเพื่อล็อคเมาส์ · WASD เดิน · E / คลิกซ้าย โต้ตอบ · F ไฟฉาย · Esc หยุด/ตั้งค่า</div><div id="clk"></div><div id="tm3"></div><div id="c4h" class="f" style="display:none;top:calc(31px + env(safe-area-inset-top,0px));font-size:14px;color:#9fe"></div>
 <div id="dfc" class="ov"><h2>🔍 ตอนที่ 4 · ความลับที่ถูกซ่อนอยู่</h2><p>คุณจะต้องหนีผีและเก็บ 💎 เพชรระหว่างทาง เลือกระดับความยาก:</p><div style="display:flex;flex-direction:column;gap:10px"><button onclick="dfPick(0)">🟢 โหมดปกติ — ถูกผีจับแล้วเพชรที่เก็บไว้ยังอยู่ครบ</button><button onclick="dfPick(1)">🔴 ฮาร์ดคอร์ — ถูกผีจับแล้วเพชรทั้งหมดถูกรีเซ็ตเป็น 0</button></div></div>
 <div id="mp" class="ov"><h2>🌐 มัลติเพลเยอร์ (เบต้า) · ตอนที่ 5</h2><p id="mps"></p><div id="mpb" style="display:flex;flex-direction:column;gap:10px"></div><button onclick="mpClose()">✖ ปิด</button></div>
 <div id="lp" class="ov"><h2>🔓 ไขกุญแจห้องขัง</h2><p id="lpi"></p><div id="lpb"><div id="lpz"></div><div id="lpm"></div></div><div id="lpp"></div><button id="lph">🔧 ไข! (Space)</button><button onclick="lpCancel()">ยกเลิก</button></div>
@@ -305,8 +309,11 @@ b.visible=true;b.position.set(cx+Math.cos(u.a)*r,y+Math.sin(u.a*3)*.2,cz+Math.si
 for(const k in DS){const q=DS[k];q.ang+=((q.open?1.45:0)-q.ang)*Math.min(1,dt*6);q.piv.rotation.y=q.ang+(k==bangId&&banging&&gh.visible?(Math.random()-.5)*.07:0)}
 FD.ang+=((FD.open?-1.45:0)-FD.ang)*Math.min(1,dt*6);FD.piv.rotation.y=FD.ang;AD.ang+=((AD.open?-1.45:0)-AD.ang)*Math.min(1,dt*6);AD.piv.rotation.y=AD.ang;
 // ปุ่มโต้ตอบ
-cur=null;if(started&&!lock&&!hid){let bd=9;I.forEach(o=>{const d=dist(P.x,P.z,o.x,o.z);if(d<o.r&&d<bd&&o.t()){bd=d;cur=o}})}
-$('act').style.display=cur?'block':'none';if(cur)$('act').textContent=cur.t();
+cur=null;if(started&&!lock&&!hid){let bd=99;I.forEach(o=>{const d=dist(P.x,P.z,o.x,o.z);if(d<o.r&&o.t()){const sc=d*(1.7-Math.max(-.5,((o.x-P.x)*-Math.sin(yaw)+(o.z-P.z)*-Math.cos(yaw))/(d||1)));if(sc<bd){bd=sc;cur=o}}})}
+uiT-=dt;if(uiT<0){uiT=.25;uiOpenC=uiOpen();if(document.pointerLockElement===cv&&uiOpenC){plWant=0;document.exitPointerLock()}}
+const lbl=cur?cur.t():'';$('act').style.display=cur&&isTouch?'block':'none';if(cur)$('act').textContent=lbl;
+const showX=!isTouch&&started&&!c2m&&!outm&&!dlgOn&&!uiOpenC;$('xh').style.display=showX?'block':'none';$('xh').className=cur?'on':'';$('xp').style.display=showX&&cur?'block':'none';if(cur)$('xp').textContent='[E / คลิก] '+lbl;
+$('plh').style.display=(!isTouch&&started&&!paused&&!uiOpenC&&document.pointerLockElement!==cv)?'block':'none';
 // กล้อง
 if(c2m){C.position.set(.5+Math.sin(T*.12)*.6,1.55,15.5);C.lookAt(.5,1.4,8)}else if(outm){P.z=15+Math.sin(T*.15)*1.5;P.x=.5+Math.sin(T*.1)*2;C.position.set(P.x,P.y,P.z);C.lookAt(.5,1.8,0)}
 else{let sx=0,sy=0;if(shk>0){shk-=dt;sx=(Math.random()-.5)*.08;sy=(Math.random()-.5)*.08}C.position.set(P.x+sx,P.y+sy,P.z);C.rotation.set(pitch,yaw,0)}
@@ -693,6 +700,12 @@ joy.addEventListener('pointermove',e=>{if(e.pointerId==jp)jmove(e)});
 const jend=e=>{if(e.pointerId==jp){jp=null;jx=jy=0;jk.style.transform='translate(-50%,-50%)'}};
 joy.addEventListener('pointerup',jend);joy.addEventListener('pointercancel',jend);
 $('fire').addEventListener('pointerdown',e=>{e.preventDefault();ia();fire()});
+const isTouch=matchMedia('(pointer:coarse)').matches||'ontouchstart' in window;let plWant=0,uiT=0,uiOpenC=false;
+const UIS=['start','note','ch','dfc','kp','c6','c2','end','mp','lp','set','dlg'];
+function uiOpen(){return UIS.some(i=>{const e=$(i);return e&&e.style.display&&e.style.display!='none'})}
+cv.addEventListener('click',e=>{if(isTouch||!started)return;if(!uiOpen()&&document.pointerLockElement!==cv){try{cv.requestPointerLock()}catch(x){}}else if(document.pointerLockElement===cv&&cur&&!lock&&!hid&&!paused&&!shoot)act()});
+document.addEventListener('pointerlockchange',()=>{if(document.pointerLockElement===cv)plWant=1;else{if(plWant&&started&&!paused&&!uiOpen())openSet(1);plWant=0}});
+document.addEventListener('mousemove',e=>{if(document.pointerLockElement!==cv||paused||rgOn)return;const ks=.0022*CFG.sens/100;yaw-=e.movementX*ks;pitch=Math.max(-1.2,Math.min(1.2,pitch-e.movementY*ks*(CFG.invy?-1:1)))});
 let curTab=0;
 function save(){try{localStorage.setItem('bat2cfg',JSON.stringify(CFG))}catch(e){}}
 function apply(){R.setPixelRatio([.7,1.2,Math.min(devicePixelRatio,2)][CFG.q]);rs();C.fov=CFG.fov;C.updateProjectionMatrix();S.fog.far=CFG.far;S.fog.near=Math.min(5,CFG.far/4);AMB.intensity=.06+CFG.bright*.006;if(torchOn)sp.intensity=CFG.torch/100;$('sub').style.fontSize=CFG.tsize+'px';joy.style.width=joy.style.height=130*CFG.jsize/100+'px';$('fps').style.display=CFG.fps?'block':'none';if(MG)MG.gain.value=CFG.mute?0:CFG.vol/100}
