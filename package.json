@@ -1,0 +1,14 @@
+{
+  "name": "khangkhao-kin-kluai",
+  "version": "1.0.0",
+  "description": "**\"ค้างคาวกินกล้วย\"** เป็นบทเพลงไทยเดิมที่มีทำนองสนุกสนานและคุ้นหู แต่ในค่ำคืนนี้ ณ บ้านไม้โบราณของครูระนาดผู้ล่วงลับ กลับเต็มไปด้วยความเงียบงัดและบรรยากาศอันน่าสะพรึงกลัว...",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}
