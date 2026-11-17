@@ -1,7 +1,7 @@
-// ตั้งค่า URL ของ WebSocket (รองรับทั้งรันบนเครื่องตัวเองและเซิร์ฟเวอร์จริง)
+// กำหนด URL ของ WebSocket
 const WS_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-    ? 'ws://localhost:8080'
-    : `wss://${window.location.hostname}:8080`;
+    ? 'ws://localhost:8080' // สำหรับรันเทสบนเครื่องตัวเอง
+    : 'wss://https://khaangkhaawkinklwy-baanranaadphii.onrender.com'; // 👈 เปลี่ยนตรงนี้เป็น URL จริงที่ได้จาก Render Dashboard ของคุณ
 
 let socket;
 let isConnected = false;
