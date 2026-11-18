@@ -40,6 +40,7 @@ button:active{background:var(--ac)}button:disabled{opacity:.4}
 #xh.on{width:18px;height:18px;margin:-9px 0 0 -9px;background:transparent;border:2px solid #ffd24a;box-shadow:0 0 8px #ffd24a}
 #xp{position:fixed;left:50%;top:calc(50% + 24px);transform:translateX(-50%);color:#ffe9b0;font-weight:700;text-shadow:0 1px 4px #000;pointer-events:none;z-index:4;display:none;font-size:16px;white-space:nowrap}
 #plh{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);color:#ddd;background:rgba(0,0,0,.6);padding:6px 12px;border-radius:8px;font-size:13px;pointer-events:none;z-index:4;display:none;white-space:nowrap}
+#mp{z-index:95}#mp select{font:inherit;padding:10px;border-radius:8px;border:1px solid #888;background:#111;color:#fff}
 #fire{bottom:calc(150px + env(safe-area-inset-bottom,0px));display:none;font-size:22px;padding:16px 20px;z-index:5;background:rgba(200,30,40,.85)}
 .ov{position:fixed;inset:0;display:none;flex-direction:column;justify-content:center;gap:10px;padding:22px;background:rgba(0,0,0,.82);overflow-y:auto}
 .ov h2{margin:0;color:#c33;font-size:22px}.ov p{line-height:1.7;margin:0;white-space:pre-line}
@@ -61,7 +62,7 @@ button:active{background:var(--ac)}button:disabled{opacity:.4}
 เพื่อเล่นเกมนี้</p></div>
 <div id="joy"><div id="jk"></div></div><div id="vg"></div><div id="hpw"><b>❤️</b><div id="hp"><i id="hpb"></i></div></div><button id="fs" class="b" onclick="fs()">⛶</button><button id="fire" class="b">🔫 ยิง</button>
 <button id="gear" class="b" onclick="openSet(1)">⚙️</button><div id="fps" class="f" style="bottom:calc(8px + env(safe-area-inset-bottom,0px));font-size:12px;color:#8f8;display:none"></div>
-<div id="set" class="ov"><div id="sp"><div id="sh"><h2>⚙️ การตั้งค่า (เกมหยุดอยู่)</h2><button onclick="openSet(0)">▶ เล่นต่อ</button></div><div id="stabs"></div><div id="sbody"></div></div></div><div id="fade"></div><div id="fl"></div>
+<div id="set" class="ov"><div id="sp"><div id="sh"><h2>⚙️ การตั้งค่า (เกมหยุดอยู่)</h2><button onclick="mpOpen()">🌐 ห้อง</button><button onclick="openSet(0)">▶ เล่นต่อ</button></div><div id="stabs"></div><div id="sbody"></div></div></div><div id="fade"></div><div id="fl"></div>
 <button id="act" class="b"></button><button id="tor" class="b">🔦 ไฟฉาย</button>
 <div id="start" class="ov" style="display:flex"><h2>ค้างคาวกินกล้วย</h2><p>คุณรับจ้างเฝ้าบ้านเก่าของครูระนาดผู้ล่วงลับ คืนนี้ฟ้ามืดสนิท ไฟในบ้านดับเกือบทั้งหลัง...
 
@@ -203,8 +204,8 @@ const OUT={A:[-.5,-2],B:[-.5,3],D:[1.5,-2.5],E:[1.5,2.5]},INN={A:[-1.5,-2],B:[-1
 const dist=(x,z,a,b)=>Math.hypot(x-a,z-b);
 // วัตถุโต้ตอบ
 const bedI=()=>c3=='A2'?'🛏 นอนหลับ':c3=='A4'?'🏃 มุดใต้เตียง!':c3?null:(st==1?'🛏 นอนหลับ':st==3?'🏃 มุดใต้เตียง!':null);
-I.push({x:-4.6,z:-2,r:1.7,t:()=>st==0&&!rmode?'🎵 เล่นระนาด':null,f:()=>{lock=1;rmode=1;mi=0;playSong(0);setTimeout(endPlay,SONG_LEN*1000);melody=[4,5,7,5,4,2,0,2,4,5,7,9,7,5,4,2,4,2,0,0,4,5,7,5,4,2,0,2,4,2,0,0].map(n=>n*2);say('คุณหยิบไม้ระนาด... เสียง “ค้างคาวกินกล้วย” ก้องไปทั้งห้อง',5000)}});
-I.push({x:4,z:-2.5,r:2.2,t:bedI,f:()=>c3=='A2'?sleepA():c3=='A4'?hideA():(st==1?sleep():hide())});
+I.push({x:-4.6,z:-2,r:1.7,t:()=>st==0&&!rmode?'🎵 เล่นระนาด':null,f:()=>{if(mpOn()){ranatGate();return}lock=1;rmode=1;mi=0;playSong(0);setTimeout(endPlay,SONG_LEN*1000);melody=[4,5,7,5,4,2,0,2,4,5,7,9,7,5,4,2,4,2,0,0,4,5,7,5,4,2,0,2,4,2,0,0].map(n=>n*2);say('คุณหยิบไม้ระนาด... เสียง “ค้างคาวกินกล้วย” ก้องไปทั้งห้อง',5000)}});
+I.push({x:4,z:-2.5,r:2.2,t:bedI,f:()=>c3=='A2'?sleepA():c3=='A4'?hideA():(st==1?(mpOn()?sleepGate():sleep()):hide())});
 I.push({x:-4,z:3.2,r:1.4,t:()=>has.axe?null:'🪓 หยิบขวาน',f:()=>{has.axe=1;axe.visible=false;inv();say('คุณได้ขวานเก่าๆ มา ด้ามเหนียวหนืดด้วยของบางอย่าง')}});
 I.push({x:-5.8,z:3.7,r:1.7,t:()=>has.gun?null:'🔫 หยิบปืนลูกซอง',f:()=>{has.gun=1;gunW.visible=false;inv();say('ปืนลูกซองกระบอกเก่าของลุงยาม... ยังมีกระสุนอยู่ 6 นัด!')}});
 I.push({x:-3.6,z:3,r:1.3,t:()=>'📄 อ่านกระดาษ',f:()=>note('บันทึกของครูทิพย์','“ระนาดตัวนี้ฉันทำเอง ผูกวิญญาณค้างคาวไว้ในไม้ลูกที่สิบ ห้ามเล่นเพลงค้างคาวกินกล้วยหลังเที่ยงคืนเด็ดขาด เพราะเธอจะมาร่วมวง\n\nเธอรักเสียงระนาดยิ่งกว่าชีวิต ถ้าไม่มีเสียงให้ตาม เธอจะยืนรอ... รอไปเรื่อยๆ\n\nลุงยามเก็บปืนลูกซองไว้บนเคาน์เตอร์ครัว เผื่อวันที่เธอมา... แต่แกไม่เคยกล้ายิง\n\nประตูห้องนอนมีกลอนหนา ถ้าล็อคไว้ เธออาจถอย... หรืออาจไม่\n\nพื้นไม้ใต้เตียงห้องนอนผุมาก ใต้ถุนบ้านต่ำพอให้คลานออกได้ ถ้าจนตรอกจริงๆ”')});
@@ -257,7 +258,7 @@ $('sk5').onclick=()=>{ia();if(!document.fullscreenElement&&!document.webkitFulls
 $('mpbtn').onclick=()=>{ia();mpOpen()};
 $('sk6').onclick=()=>{ia();if(!document.fullscreenElement&&!document.webkitFullscreenElement)fs();$('start').style.display='none';started=1;ch6go()};
 $('sk1').onclick=()=>{ia();if(!document.fullscreenElement&&!document.webkitFullscreenElement)fs();$('start').style.display='none';started=1;ch2()};
-$('go').onclick=()=>{ia();if(!document.fullscreenElement&&!document.webkitFullscreenElement)fs();$('start').style.display='none';lock=0;started=1;setL('A',1);obj('เข้าไปสำรวจบ้าน เปิดไฟ แล้วไปเล่นระนาดในห้องโถง (ซ้ายมือ)');say('คุณก้าวเข้าบ้านเก่าหลังนั้น กลิ่นไม้ผุและธูปจางๆ... ดวงไฟในห้องโถงเป็นห้องเดียวที่ยังสว่างอยู่',7000);setTimeout(()=>say('เดินสำรวจให้ทั่ว บางอย่างอาจเป็นประโยชน์ในคืนนี้',5000),8500)};
+$('go').onclick=()=>{curCh='1';g1=0;ia();if(!document.fullscreenElement&&!document.webkitFullscreenElement)fs();$('start').style.display='none';lock=0;started=1;setL('A',1);obj('เข้าไปสำรวจบ้าน เปิดไฟ แล้วไปเล่นระนาดในห้องโถง (ซ้ายมือ)');say('คุณก้าวเข้าบ้านเก่าหลังนั้น กลิ่นไม้ผุและธูปจางๆ... ดวงไฟในห้องโถงเป็นห้องเดียวที่ยังสว่างอยู่',7000);setTimeout(()=>say('เดินสำรวจให้ทั่ว บางอย่างอาจเป็นประโยชน์ในคืนนี้',5000),8500)};
 const cv=R.domElement,joy=$('joy');let jp=null,lp=null,jo=[0,0],jx=0,jy=0,lo=[0,0];const cl=v=>Math.max(-1,Math.min(1,v));
 cv.addEventListener('pointerdown',e=>{ia();if(e.pointerType=='mouse'&&shoot)fire();cv.setPointerCapture(e.pointerId);lp=e.pointerId;lo=[e.clientX,e.clientY]});
 cv.addEventListener('pointermove',e=>{if(e.pointerId==jp){jx=cl((e.clientX-jo[0])/(45*CFG.jsize/100));jy=cl((e.clientY-jo[1])/(45*CFG.jsize/100))}else if(e.pointerId==lp){const ks=.006*CFG.sens/100;yaw-=(e.clientX-lo[0])*ks;pitch=Math.max(-1.2,Math.min(1.2,pitch-(e.clientY-lo[1])*ks*(CFG.invy?-1:1)));lo=[e.clientX,e.clientY]}});
@@ -293,7 +294,7 @@ if(c3){{const z=P.x>350?5:P.x>150?4:P.x>90?2:P.x<-90?3:1;if(z!=zn){zn=z;['A','B'
 if(c3=='A3'&&tvMode==1&&!lock&&rof(P.x,P.z)=='A'&&dist(P.x,P.z,-7.4,.15)<3.4){tvMode=2;tvMsg='บ้านเลขที่ 13!';tone(200,.3,'square',.2);startDlg(DLTV,tvEnd)}
 if(c3t>0){c3t-=dt;const e=$('tm3');e.style.display='block';e.textContent='⏱ '+Math.max(0,c3t).toFixed(2)+' วิ';if(c3t<=0){c3t=0;e.style.display='none';if(c3=='A4')startGhostA()}}
 if(r2play){bars2.forEach(b=>{if(b.userData.hit>0){b.userData.hit-=dt*4;b.position.y=b.userData.y+Math.max(b.userData.hit,0)*.1}});r2t-=dt;if(r2t<0){r2t=.18+Math.random()*.1;bars2[Math.floor(Math.random()*21)].userData.hit=1}}}
-if(c4)c4Tick(dt);if(c5)c5Tick(dt);if(c6)c6Tick(dt);
+if(c4)c4Tick(dt);if(c5)c5Tick(dt);if(c6)c6Tick(dt);if(mp&&RM&&mpStarted)mpTick(dt);
 if(stun>0)stun-=dt;if(cool>0)cool-=dt;
 if(gunG.visible){kick=Math.max(0,kick-dt*3.2);flashT=Math.max(0,flashT-dt*12);gunG.position.set(.2,-.22+Math.sin(T*2)*.004,-.38+kick*.1);gunG.rotation.set(kick*.4,.05,0);mf.material.opacity=flashT;mf.rotation.z=Math.random()*6;gl2.intensity=.5+flashT*5}
 if(gHurt>0){gHurt=Math.max(0,gHurt-dt*3);gl.intensity=.9+gHurt*5}
@@ -365,12 +366,12 @@ $('dnx').textContent=dlI==DLc.length-1?'ต่อไป ▶':'ถัดไป �
 function dlgNext(){if(!dlgOn)return;if(dlI>=DLc.length-1){dlgOn=0;$('dlg').style.display='none';setTimeout(dlEnd,1500);return}dlI++;showBeat();tone(520,.1,'sine',.08)}
 function dlgSkip(){for(let i=dlI;i<DLc.length;i++){dlI=i;showBeat()}dlgNext()}
 $('dnx').onclick=dlgNext;$('dsk').onclick=dlgSkip;
-function ch2(){$('end').style.display='none';c2m=1;outm=1;lock=1;shoot=0;hid=0;HP=100;gunG.visible=false;gh.visible=false;batMode=0;rmode=0;song.pause();
+function ch2(){if(mpBlock())return;curCh='2';mpAnn('2');$('end').style.display='none';c2m=1;outm=1;lock=1;shoot=0;hid=0;HP=100;gunG.visible=false;gh.visible=false;batMode=0;rmode=0;song.pause();
 ['fire','tor','joy','hpw','obj','inv','tm'].forEach(i=>$(i).style.display='none');$('obj').textContent='';
 TREES.forEach(c=>c.material.color.set(0x2f6b2f));GRND.material.color.set(0x4a7a3a);mm.material.color.set(0xfff4c0);mm.position.set(25,45,-70);AMB.intensity=.7;moon.position.set(6,22,26);S.fog.near=20;S.fog.far=110;
 mkV(-3,10.5,0x3a5a8a,0xc89a70,0x8a6a3a);mkV(-1,10.8,0xb04a6a,0xd4a57a,0);mkV(1,10.4,0x2a6a4a,0xc08a60,0xd8d0b0);mkV(3,10.9,0xd0a020,0xd8b090,0);
 DLc=DL;dlEnd=()=>{$('c2').style.display='flex'};dlgOn=1;dlI=0;$('dlg').style.display='block';showBeat()}
-function c2pick(k){chap(k==0?ch3A:ch3B)}
+function c2pick(k){if(mpBlock())return;mpAnn(k==0?'3A':'3B');chap(k==0?ch3A:ch3B)}
 
 // ===== ตอนที่ 3 =====
 let baseY=1.6,c3=0,ev=0,c3t=0,carry=0,r2play=0,r2t=0,tvMode=0,tvAcc=0,flk=0,nzG=null,tvMsg='';const evd=[0,0,0],bars2=[],BL=[];let zn=1;
@@ -404,14 +405,14 @@ W(1.2,1,1.2,0x5a3a1a,108.4,fy+.5,2.6,1);W(.5,2,3,0x3a2a1a,100.4,fy+1,0,1);W(.3,.
 for(let i=0;i<6;i++)W(1.6,.3*(i+1),.4,0x4a3a28,102,fy+.15*(i+1),3.8-i*.4,0);cols.push({a:101.2,b:1.4,c:102.8,d:4});
 [[105,-1.2,0],[107.5,-1.2,2.5]].forEach(p=>{const l=new THREE.PointLight(0xffb070,1.1,10);l.position.set(...p);S.add(l);BL.push(l)})})();
 function evTxt(){obj('ค้นหาหลักฐานในชั้นใต้ดิน (ทางลงอยู่ในครัว) — หลักฐาน '+ev+'/3')}
-function evGot(i,title,body){evd[i]=1;ev++;note(title,body);evTxt();if(ev>=3){c3='A2';obj('ได้หลักฐานครบแล้ว! ขึ้นไปชั้นบนแล้วเข้านอนที่ห้องนอน (เตรียมของป้องกันตัวไว้ด้วยนะ)');say('หลักฐานครบ 3 ชิ้น... คืนนี้ถึงเวลาพักเสียที',5000)}}
+function evGot(i,title,body){evd[i]=1;ev++;evm|=1<<i;note(title,body);evTxt();if(ev>=3){c3='A2';obj('ได้หลักฐานครบแล้ว! ขึ้นไปชั้นบนแล้วเข้านอนที่ห้องนอน (เตรียมของป้องกันตัวไว้ด้วยนะ)');say('หลักฐานครบ 3 ชิ้น... คืนนี้ถึงเวลาพักเสียที',5000)}}
 I.push({x:-2.2,z:2,r:1.5,t:()=>(c3=='A1'||c3=='A2'||(c4=='K1'&&c4v=='H'))?'🪜 ลงชั้นใต้ดิน':null,f:()=>tp(104,1.5,0,-1.9,()=>say('ชั้นใต้ดินเย็นชื้น กลิ่นไม้ผุและควันธูปเก่า... ค้นหาหลักฐานให้ครบ',5000))});
 I.push({x:102,z:2,r:2,t:()=>'🪜 ขึ้นไปชั้นบน',f:()=>c4v=='T'?tp(-103.2,14.5,-Math.PI/2,1.6):tp(-2.2,3,Math.PI/2,1.6)});
 I.push({x:105,z:-2,r:1.8,t:()=>c3=='A1'&&!evd[0]?'📖 อ่านสมุดบันทึก':null,f:()=>evGot(0,'สมุดบันทึกของครูทิพย์ (เล่มสุดท้าย)','“ปี 2509 พิมเป็นศิษย์ที่ฝีมือเหนือกว่าฉัน ทุกคนในวงปรบมือให้เธอ ไม่มีใครมองฉันเลย... ฉันสั่งให้เธอเล่นเพลงค้างคาวกินกล้วยซ้ำแล้วซ้ำเล่า จนนิ้วแตก จนเลือดไหล แต่เธอก็ไม่หยุด เพราะเธอรักเสียงระนาดยิ่งกว่าชีวิต\n\nเมื่อเธอล้มลง ฉันกลัวคำสาป เลยผูกวิญญาณเธอไว้ในไม้ลูกที่สิบ... ขอโทษนะ พิม”')});
 I.push({x:108.4,z:1.4,r:1.8,t:()=>c3=='A1'&&!evd[1]?'📦 เปิดลังไม้':null,f:()=>evGot(1,'ไม้ระนาดลูกที่สิบ','ในลังไม้เก่า มีไม้ระนาดแตกร้าวตรงกลางวางอยู่บนผ้าแดง มีผมยาวสีดำพันอยู่ และคราบสีน้ำตาลแห้งกรัง\n\nบนฝากล่องมีรอยขูดเป็นตัวหนังสือสั่นๆ “อย่าเปิด... เธอยังเล่นไม่จบ”')});
 I.push({x:101.4,z:.2,r:1.8,t:()=>c3=='A1'&&!evd[2]?'📼 กดเล่นเทปตลับ':null,f:()=>evGot(2,'เทปตลับ (ลายมือเขียนว่า “พิม”)','คุณกดเล่น... เสียงซ่าๆ แล้วเป็นเสียงเด็กสาวหอบหายใจ\n\n“ครูคะ... นิ้วหนูเจ็บ... หนูเล่นไม่ไหวแล้วค่ะ...”\n\nเสียงระนาดตะกุกตะกัก ขาดๆ หายๆ แล้วเสียงกระซิบเบาๆ\n\n“ใครก็ได้... ช่วยเล่นเพลงนี้ให้จบทีเถอะ... ให้หนูได้พักสักที”')});
 // ตอนที่ 3A
-function ch3A(){st=99;c3='A1';ev=0;evd.fill(0);flk=0;P.x=.5;P.z=4.2;P.y=baseY=1.6;yaw=0;pitch=0;
+function ch3A(){curCh='3A';st=99;c3='A1';ev=0;evd.fill(0);flk=0;P.x=.5;P.z=4.2;P.y=baseY=1.6;yaw=0;pitch=0;
 clkShow('🌙 ตอนที่ 3 · ใต้ถุนบ้าน');say('คุณกลับเข้าบ้านครูทิพย์ ตัดสินใจจะหาให้ได้ว่า “พิม” คือใคร ก่อนจะกล้านอนที่นี่...',6500);evTxt()}
 function sleepA(){lock=1;$('fade').style.opacity=1;say('คุณล้มตัวลงนอน... เปลือกตาหนักอึ้ง',2500);setTimeout(()=>{['A','B','C','D','E'].forEach(i=>setL(i,0));P.x=3.4;P.z=-2.5;yaw=Math.PI/2;pitch=0;c3='A3';flk=1;tvMode=1;nzStart();batMode='A';$('fade').style.opacity=0;lock=0;
 say('ซ่า... ซ่าๆๆ...\nเสียงดังมาจากห้องนั่งเล่น ทั้งที่ไม่มีใครเปิดอะไรไว้',6500);obj('ไปดูเสียงซ่าๆ ที่ห้องนั่งเล่น (ห้องระนาด ทางซ้ายมือสุดทางเดิน)')},2800)}
@@ -441,7 +442,7 @@ const AD={open:0,ang:0};(function(){const piv=new THREE.Group();piv.position.set
 const col={a:-122.6,b:2.4,c:-121.4,d:2.6,off:0};cols.push(col);AD.piv=piv;AD.col=col;
 I.push({x:-122,z:2.5,r:1.7,t:()=>AD.open?'🚪 ปิดประตูห้อง':'🚪 เปิดประตูห้อง',f:()=>{AD.open=AD.open?0:1;col.off=AD.open;tone(200,.2,'square',.08)}})})();
 const R2=mkRan(bars2);R2.position.set(-121.3,0,.1);R2.rotation.y=Math.PI/2;R2.visible=false;S.add(R2);['R4','C1','C2','LB'].forEach(i=>RL[i].l.visible=false);BL.forEach(l=>l.visible=false);
-function ch3B(){st=99;c3='B1';flk=0;AD.open=0;AD.col.off=0;AD.ang=0;AD.piv.rotation.y=0;RANAT1.visible=false;mkV(-99,9.6,0x2a3a5a,0xc89a70,0x2a3a5a);['R4','C1','C2','LB'].forEach(i=>setL(i,1));
+function ch3B(){curCh='3B';st=99;c3='B1';flk=0;AD.open=0;AD.col.off=0;AD.ang=0;AD.piv.rotation.y=0;RANAT1.visible=false;mkV(-99,9.6,0x2a3a5a,0xc89a70,0x2a3a5a);['R4','C1','C2','LB'].forEach(i=>setL(i,1));
 P.x=-121.4;P.z=1.2;P.y=baseY=1.6;yaw=Math.PI;pitch=0;clkShow('🏨 ตอนที่ 3 · ห้อง 404');say('ห้องเล็กแต่สะอาด หน้าต่างเปิดออกสู่ถนนที่ไฟสว่าง... บ้านผีอยู่ไกลออกไปหลายกิโลแล้ว คืนนี้คงหลับสบาย',7000);obj('เข้านอนที่เตียง')}
 function sleepB(){lock=1;$('fade').style.opacity=1;say('คุณปิดไฟ ล้มตัวลงนอน... คืนนี้เงียบสงบผิดปกติ ไม่มีเสียงระนาด ไม่มีค้างคาว มีแต่เสียงแอร์เบาๆ',4500);
 setTimeout(()=>{c3='B2';flk=1;R2.visible=true;r2play=1;playSong(1);P.x=-122.4;P.z=.5;yaw=-Math.PI/2;pitch=0;$('fade').style.opacity=0;lock=0;
@@ -491,14 +492,14 @@ const CT4=[['บันทึกเขต 13 · เคสที่ 1','โคร�
 ['บันทึกเขต 13 · เคสที่ 2','พิมไม่ใช่คนเดียว มีนักดนตรีอีกเก้าคนถูกใช้ในการทดลอง ลูกระนาดแต่ละลูกผูกกับหนึ่งชีวิต ลูกที่สิบคือพิม... และลูกที่สิบเอ็ดยังว่างอยู่ ครูทิพย์เขียนไว้ว่า “เก็บไว้ให้ผู้เฝ้าบ้านคนต่อไป”'],
 ['บันทึกเขต 13 · เคสที่ 3','เจ้าสัวสั่งปิดเขตหลังพิมตาย ประตูทางออกถูกเปลี่ยนเป็นระบบรหัส 4 ตัว ครูทิพย์ซ่อนรหัสไว้ในเคสสี่ใบกระจายทั่วเขต เพื่อไม่ให้ใครหนีออกไปได้... รวมทั้งตัวเธอเอง'],
 ['บันทึกเขต 13 · เคสที่ 4','ถ้าคุณอ่านบันทึกนี้ได้ แปลว่าคุณมาไกลเกินกว่าจะกลับไปเป็นคนธรรมดาแล้ว จงออกไปจากที่นี่ และเอาความจริงไปบอกคนข้างนอก ก่อนที่ลูกระนาดลูกที่สิบเอ็ดจะมีเจ้าของ']];
-function openCase(i){caseGot[i]=1;CS[i].visible=false;if(c4=='K3'&&gSp<2.7)gSp+=.3;c4hud();note(CT4[i][0],CT4[i][1]+'\n\nรหัสหลักที่ '+(i+1)+' : '+code[i]);if(caseGot.reduce((a,b)=>a+b,0)>=4)obj('ได้รหัสครบแล้ว! ไปใส่รหัสที่ประตูทางออก (ปลายห้องโถงด้านขวา) แล้ววิ่งออกไป!')}
+function openCase(i){caseGot[i]=1;cmm|=1<<i;CS[i].visible=false;if(c4=='K3'&&gSp<2.7)gSp+=.3;c4hud();note(CT4[i][0],CT4[i][1]+'\n\nรหัสหลักที่ '+(i+1)+' : '+code[i]);if(caseGot.reduce((a,b)=>a+b,0)>=4)obj('ได้รหัสครบแล้ว! ไปใส่รหัสที่ประตูทางออก (ปลายห้องโถงด้านขวา) แล้ววิ่งออกไป!')}
 // จอโทรศัพท์
 function drawPhone(){if(c5){drawPhone5();return}const c=phX,n=caseGot.reduce((a,b)=>a+b,0);c.fillStyle='#071018';c.fillRect(0,0,256,512);c.fillStyle='#9fe';c.font='bold 24px Sarabun,sans-serif';c.fillText('เขต 13',16,44);c.fillStyle='#fff';c.font='21px Sarabun,sans-serif';c.fillText('💎 '+diam+' / '+DM.length,16,100);c.fillText('🧳 เคส '+n+' / 4',16,142);c.fillStyle='#8cf';c.fillText('รหัสประตู',16,200);c.fillStyle='#ffd24a';c.font='bold 46px monospace';c.fillText(code.map((x,i)=>caseGot[i]?x:'_').join(' '),16,262);c.fillStyle='#7ad';c.font='18px Sarabun,sans-serif';c.fillText(hard?'🔴 ฮาร์ดคอร์':'🟢 โหมดปกติ',16,320);c.fillStyle='#e66';c.fillText('ผีกำลังตามคุณ',16,470);phT.needsUpdate=true}
 function c4hud(){const e=$('c4h');e.style.display='block';e.textContent='💎 '+diam+'/'+DM.length+'   🧳 '+caseGot.reduce((a,b)=>a+b,0)+'/4   รหัส: '+code.map((c,i)=>caseGot[i]?c:'_').join(' ')+(hard?'   🔴':'');drawPhone()}
 // เริ่มตอนที่ 4
-function ch4go(){c4v=window._v||'H';$('end').style.display='none';$('dfc').style.display='flex'}
-function dfPick(h){hard=h;$('dfc').style.display='none';chap(ch4Start)}
-function ch4Start(){st=99;c3='K';c4='K1';has.phone=1;chose=7;carry=0;HP=100;diam=0;caseGot=[0,0,0,0];code=[0,0,0,0].map(()=>1+Math.floor(Math.random()*9));kd=[0,0,0,0,0];thin=Math.floor(Math.random()*5);doorOpen=0;zc=0;k2slam=0;bkClose=0;exOpen=0;kpIn='';gSp=1.5;swg=0;
+function ch4go(){if(mpBlock())return;c4v=window._v||'H';$('end').style.display='none';$('dfc').style.display='flex'}
+function dfPick(h){hard=h;$('dfc').style.display='none';if(mp&&mp.host&&mpStarted){pre4=makePre4();mpAnn('4'+c4v,{h:hard,p4:pre4})}chap(ch4Start)}
+function ch4Start(){curCh='4';st=99;c3='K';c4='K1';has.phone=1;chose=7;carry=0;HP=100;diam=0;caseGot=[0,0,0,0];code=pre4?pre4.code.slice():[0,0,0,0].map(()=>1+Math.floor(Math.random()*9));kd=[0,0,0,0,0];thin=pre4?pre4.thin:Math.floor(Math.random()*5);pre4=null;dmm=0;cmm=0;exo=0;doorOpen=0;zc=0;k2slam=0;bkClose=0;exOpen=0;kpIn='';gSp=1.5;swg=0;
 DM.forEach(d=>{d.got=0;d.m.visible=true});CS.forEach(c=>c.visible=true);PAN.forEach((p,i)=>{p.visible=VD[i].visible=(i==thin);p.position.y=-2.3});bkDoor.position.y=4.6;gateDoor.position.y=4.6;exitDoor.position.y=1.5;exCol.off=0;
 RANAT1.visible=true;$('hpw').style.display='none';phG.visible=false;axeG.visible=!!has.axe;c4hud();flk=0;
 if(c4v=='H'){P.x=.5;P.z=4.2;yaw=0;obj('ไปที่ชั้นใต้ดิน (ช่องลงในครัว) แล้วเคาะกำแพงหาจุดที่ “บาง” กว่าที่อื่น');say('คุณกลับมาคิดถึงคำในเทปตลับ... “ช่วยเล่นเพลงนี้ให้จบ” บ้านหลังนี้ต้องมีความลับที่ถูกซ่อนไว้อีก',7000)}
@@ -514,18 +515,18 @@ const FS4=[[272,-8],[258,8],[272,8],[258,-8],[262,0]];
 function farSpawn(){let b=FS4[0],bd=0;FS4.forEach(p=>{const d=dist(P.x,P.z,p[0],p[1]);if(d>bd){bd=d;b=p}});gh.position.set(b[0],0,b[1])}
 function enterZone(){c4='K3';gSp=1.5+.3*caseGot.reduce((a,b)=>a+b,0);cp=[250,0];tone(60,.9,'square',.5);farSpawn();
 clkShow('☣ เขตทดลองหมายเลข 13 — เขตหวงห้าม');say('ประตูเหล็กด้านหลังปิดลงเองอีกครั้ง... ในเขตมีแสงไฟเย็นๆ และเคสโลหะสี่ใบที่มีไฟสีส้มส่องขึ้นฟ้า',7000);obj('ภารกิจ: ตามหาเคส 4 อัน เพื่อเอารหัสไปเปิดประตูทางออก (เก็บ 💎 เพชรเพิ่มได้ระหว่างทาง)');c4hud()}
-function zoneCaught(){if(zc)return;zc=1;lock=1;sting();shk=.5;if(hard){diam=0;DM.forEach(d=>{d.got=0;d.m.visible=true})}
+function zoneCaught(){if(zc)return;zc=1;lock=1;sting();shk=.5;if(hard){diam=0;dmm=0;DM.forEach(d=>{d.got=0;d.m.visible=true})}
 say(hard?'ผีจับคุณได้! 🔴 ฮาร์ดคอร์: เพชรทั้งหมดถูกรีเซ็ตเป็น 0':'ผีจับคุณได้! 🟢 โหมดปกติ: เพชรที่เก็บไว้ยังอยู่ครบ',5000);$('fade').style.opacity=1;
 setTimeout(()=>{P.x=cp[0];P.z=cp[1];yaw=-Math.PI/2;pitch=0;if(c4=='K2'){gh.position.set(cp[0]-2.5,0,0)}else farSpawn();$('fade').style.opacity=0;lock=0;zc=0;c4hud()},1600)}
 function kpOpen(){kpIn='';kpShow();lock=1;$('kp').style.display='flex'}
 function kpClose(){$('kp').style.display='none';lock=0}
 function kpShow(){$('kd').textContent=(kpIn+'----').slice(0,4);$('kd').style.color='#ffd24a'}
 (function(){const k=$('kk');['1','2','3','4','5','6','7','8','9','⌫','0','✔'].forEach(t=>{const b=document.createElement('button');b.textContent=t;b.onclick=()=>{tone(700,.15,'sine',.08);
-if(t=='⌫')kpIn=kpIn.slice(0,-1);else if(t=='✔'){if(kpIn==code.join('')){kpClose();exOpen=1;exCol.off=1;c4='K4';gSp=2.4;sting();say('ประตูทางออกเปิดแล้ว! วิ่งออกไป!!',5000);obj('วิ่งออกประตูทางออกเดี๋ยวนี้!')}else{tone(120,.5,'square',.4);$('kd').style.color='#f44';say('รหัสผิด! ตรวจเลขจากเคสอีกครั้ง',2500);kpIn='';gSp+=.1;return}}
+if(t=='⌫')kpIn=kpIn.slice(0,-1);else if(t=='✔'){if(kpIn==code.join('')){kpClose();exOpen=1;exo=1;exCol.off=1;c4='K4';gSp=2.4;sting();say('ประตูทางออกเปิดแล้ว! วิ่งออกไป!!',5000);obj('วิ่งออกประตูทางออกเดี๋ยวนี้!')}else{tone(120,.5,'square',.4);$('kd').style.color='#f44';say('รหัสผิด! ตรวจเลขจากเคสอีกครั้ง',2500);kpIn='';gSp+=.1;return}}
 else if(kpIn.length<4)kpIn+=t;kpShow()};k.appendChild(b)})})();
 function finish4(){if(c4=='KD')return;c4='KD';lock=1;gh.visible=false;phG.visible=false;$('fade').style.opacity=1;
 endScr('🏆 ตอนที่ 4 จบ: ความลับที่ถูกซ่อนอยู่','คุณวิ่งผ่านประตูเหล็กออกไป เสียงกรีดร้องของพิมดังตามหลังแต่ข้ามเส้นประตูมาไม่ได้ ประตูปิดลงเบาๆ กลบเสียงทั้งหมด\n\nทางออกอยู่ในป่าหลังวัดร้าง คุณหอบอยู่กลางแสงอรุณ ในมือยังกำเพชร '+diam+' เม็ด จากทั้งหมด '+DM.length+' เม็ด ('+(hard?'ฮาร์ดคอร์ 🔴':'โหมดปกติ 🟢')+')\n\nตอนนี้คุณรู้ความลับแล้ว: ลูกระนาดลูกที่สิบเอ็ดกำลังรอเจ้าของ... และมันไม่ได้ถูกเตรียมไว้สำหรับใครอื่นนอกจากคุณ\n\n(ติดตามตอนที่ 5 — เร็วๆ นี้)',1600)}
-function zoneTick(dt){DM.forEach(d=>{if(d.got)return;d.m.rotation.y+=dt*2;d.m.position.y=.9+Math.sin(T*2+d.ph)*.08;if(dist(P.x,P.z,d.x,d.z)<.95){d.got=1;d.m.visible=false;diam++;tone(1320,.25,'triangle',.25);tone(1760,.15,'triangle',.3);c4hud()}});
+function zoneTick(dt){DM.forEach(d=>{if(d.got)return;d.m.rotation.y+=dt*2;d.m.position.y=.9+Math.sin(T*2+d.ph)*.08;if(dist(P.x,P.z,d.x,d.z)<.95){d.got=1;d.m.visible=false;diam++;dmm|=1<<DM.indexOf(d);tone(1320,.25,'triangle',.25);tone(1760,.15,'triangle',.3);c4hud()}});
 if(gh.visible&&!zc){const dx=P.x-gh.position.x,dz=P.z-gh.position.z,d=Math.hypot(dx,dz)||.01,sp=gSp*(d>11?2.2:1);gh.position.x+=dx/d*sp*dt;gh.position.z+=dz/d*sp*dt;gh.rotation.y=Math.atan2(dx,dz);gh.position.y=Math.sin(T*3)*.03;
 stepT-=dt;if(stepT<0){stepT=.55;tone(70,Math.min(.5,2/(1+d)),'sine',.25)}if(dro)dro.forEach(x=>x.gain.value=Math.min(.2,.9/(1+d))*(.6+.4*Math.sin(T*7))*CFG.amb/100);if(d<.9)zoneCaught()}
 if(c4=='K2'){if(!k2slam&&P.x>208){k2slam=1;bkClose=1;tone(60,.9,'square',.5);say('เสียงโลหะดังสนั่น! ประตูด้านหลังปิดลงเอง...',3000);
@@ -542,7 +543,7 @@ if(c4=='K1'||c4=='KD')return;zoneTick(dt)}
 
 
 // ===== ตอนที่ 5 : โรงเรียนมัธยมเก่า (+ มัลติเพลเยอร์เบต้า) =====
-let c5=0,sc5='',pgot=[0,0,0,0,0,0,0],kc=0,picks=3,stuck=0,lh=-1,resT=0,resId='',lpOn=0,lpPos=0,lpDir=1,lpPin=0,lpZone=[.4,.6],lpSpd=.9,psT=0,mmT=0,myPeer='',RM=null,roomNS=null,mp=null,mpStarted=0,hostFr=null,myFr=null,gateOpen=0,wpS=0;
+let curCh='',g1=0,gt1=0,mpF=0,mpN=0,pre4=null,evm=0,dmm=0,cmm=0,exo=0,c5=0,sc5='',pgot=[0,0,0,0,0,0,0],kc=0,picks=3,stuck=0,lh=-1,resT=0,resId='',lpOn=0,lpPos=0,lpDir=1,lpPin=0,lpZone=[.4,.6],lpSpd=.9,psT=0,mmT=0,myPeer='',RM=null,roomNS=null,mp=null,mpStarted=0,hostFr=null,myFr=null,gateOpen=0,wpS=0;
 const SL=[],SWL=[],PHM=[],AV={},BOTS=[],SEENFR={},CAP=['รูปห้อง ม.3/2 ปีการศึกษา 2538 — คุณยืนแถวหลังสุด ยิ้มกว้างที่สุด ทั้งที่เพิ่งโดนครูตีเมื่อเช้า','รูปวันกีฬาสี — เพื่อนทั้งห้องชูถ้วย แต่มีเด็กผู้หญิงชุดขาวยืนอยู่ไกลๆ ไม่มีใครในรูปรู้จักเธอ','รูปหลังห้องสมุด — ไดอารี่เล่มเก่าเล่าว่า ครูดนตรีมักเดินตรวจห้องสมุดตอนค่ำ พร้อมเสียงไม้เท้าเคาะพื้น ก๊อก... ก๊อก...','รูปชมรมดนตรีไทย — คุณนั่งหน้าระนาด ข้างหลังคือครูทิพย์ ยืนยิ้ม มือของเธอวางอยู่บนไหล่คุณ','รูปบนเวทีหอประชุม งานปัจฉิมนิเทศ — ทุกคนร้องไห้ ยกเว้นครูทิพย์ที่ยิ้มอย่างประหลาด','รูปห้องศิลปะ — ภาพวาดค้างคาวกินกล้วยที่คุณวาดตอน ม.1 ครูติดไว้ที่ผนังแล้วบอกว่า “เธอมีพรสวรรค์”','รูปห้องพักครู — ครูทิพย์ถือไม้ระนาดลูกที่สิบเอ็ด มองตรงมาที่กล้อง ด้านหลังรูปเขียนว่า “ถึงลูกศิษย์ที่ฉันเลือก”'];
 const PH5=[[409.5,-8],[420.5,-8],[431.5,-8],[440.5,-8],[424,0],[409.5,8],[431.5,8]];
 const R5=[[446,-14],[440.5,-14],[440.5,-8],[440.5,-14],[431.5,-14],[431.5,-8],[431.5,-14],[420.5,-14],[420.5,-8],[420.5,-14],[409.5,-14],[409.5,-8],[409.5,-14],[402,-14],[402,0],[410,0],[424,0],[438,0],[446,0],[446,14],[440.5,14],[431.5,14],[431.5,8],[431.5,14],[420.5,14],[420.5,8],[420.5,14],[409.5,14],[409.5,8],[409.5,14],[402,14],[402,0],[402,-14]];
@@ -574,8 +575,8 @@ if(mp&&RM)RM.peers().forEach(p=>{if(!p.isMe&&p.presence.x!=null)dot(p.presence.x
 dot(gh.position.x,gh.position.z,'#f44',5);dot(P.x,P.z,'#4cf',5);c.fillStyle='#8cf';c.font='15px Sarabun,sans-serif';c.fillText('🟦 คุณ  🟥 ครู  🟨 รูป'+(mp?'  🟩 เพื่อน':''),12,365);
 c.fillStyle='#e66';c.fillText(sc5=='CELL'?'อยู่ในห้องขัง!':'ระวังครูเดินตรวจ',12,470);phT.needsUpdate=true}
 // ---- เริ่มตอนที่ 5 ----
-function ch5go(){$('end').style.display='none';chap(ch5Init)}
-function ch5Init(){st=99;c3='S';c4=0;c5=1;sc5='S1';pgot=[0,0,0,0,0,0,0];kc=0;picks=3;stuck=0;lh=-1;resT=0;gateOpen=0;chose=7;HP=100;carry=0;lpOn=0;
+function ch5go(){if(mpBlock())return;mpAnn('5');$('end').style.display='none';chap(ch5Init)}
+function ch5Init(){curCh='5';st=99;c3='S';c4=0;c5=1;sc5='S1';pgot=[0,0,0,0,0,0,0];kc=0;picks=3;stuck=0;lh=-1;resT=0;gateOpen=0;chose=7;HP=100;carry=0;lpOn=0;
 PHM.forEach(m=>m.visible=true);barsDoor.position.y=1.3;cellCol.off=0;gateD5.position.y=1.4;gateCol.off=0;
 $('hpw').style.display='none';has.phone=1;phG.visible=true;axeG.visible=false;gunG.visible=false;
 const ix=mp?Math.max(0,RM.peers().map(p=>p.peer).sort().indexOf(myPeer)):0;P.x=402+ix*1.1;P.z=-14.6;P.y=baseY=1.6;yaw=-Math.PI/2;pitch=0;
@@ -625,43 +626,100 @@ function mkLabel(t){const c=document.createElement('canvas');c.width=256;c.heigh
 function mkAv(col,name){const g=new THREE.Group(),add=(m,x,y,z)=>{m.position.set(x,y,z);g.add(m)};add(new THREE.Mesh(new THREE.CylinderGeometry(.22,.26,.8,10),Mt(col)),0,1.1,0);[-1,1].forEach(q=>add(new THREE.Mesh(new THREE.CylinderGeometry(.08,.09,.7,8),Mt(0x2a2a3a)),q*.1,.35,0));add(new THREE.Mesh(new THREE.SphereGeometry(.17,12,12),Mt(0xd8b090)),0,1.72,0);g.add(mkLabel(name));g.visible=false;S.add(g);return g}
 function avUp(id,x,z,yw,col,name,dt){let a=AV[id];if(!a)a=AV[id]=mkAv(col,name);a.visible=true;a.userData.s=1;const k=Math.min(1,dt*8);a.position.x+=(x-a.position.x)*k;a.position.z+=(z-a.position.z)*k;a.rotation.y=yw}
 function avSync(dt){for(const k in AV)AV[k].userData.s=0;const ps=RM.peers(),ids=ps.map(p=>p.peer).sort(),hp=ps.find(p=>p.presence.r=='host');
-ps.forEach(p=>{if(p.isMe){return}const pr=p.presence;if(pr.x==null)return;avUp(p.peer,pr.x,pr.z,pr.y||0,0x3a7a9a,'ผู้เล่น '+(ids.indexOf(p.peer)+1),dt)});
+ps.forEach(p=>{if(p.isMe){return}const pr=p.presence;if(pr.x==null||pr.ch!=curCh||c2m||outm)return;avUp(p.peer,pr.x,pr.z,pr.y||0,0x3a7a9a,'ผู้เล่น '+(ids.indexOf(p.peer)+1),dt)});
 const B=mp.host?BOTS.map(b=>[b.x,b.z,b.yaw,b.s]):(hp&&hp.presence.B)||[];B.forEach((b,i)=>avUp('b'+i,b[0],b[1],b[2]||0,0x4aa84a,'บอท '+(i+1),dt));for(const k in AV)if(!AV[k].userData.s)AV[k].visible=false}
 const mask=()=>pgot.reduce((a,v,i)=>a|(v<<i),0);
-function mpSend(){if(!RM)return;const r={x:+P.x.toFixed(2),z:+P.z.toFixed(2),y:+yaw.toFixed(2),c:sc5=='CELL'?1:0,h:lh>=0?1:0,k:kc,pm:mask(),r:mp.host?'host':'guest'};
-if(mp.host){r.T=[+gh.position.x.toFixed(1),+gh.position.z.toFixed(1),+gh.rotation.y.toFixed(2)];r.B=BOTS.map(b=>[+b.x.toFixed(1),+b.z.toFixed(1),+(b.yaw||0).toFixed(2),b.s]);if(hostFr&&hostFr.to!='me')r.fr=hostFr}if(myFr)r.fr=myFr;RM.presence(r).catch(()=>{})}
-function mpScan(){const ps=RM.peers();ps.forEach(p=>{if(p.isMe)return;const pr=p.presence;if(pr.pm!=null)for(let i=0;i<7;i++)if((pr.pm>>i)&1)setPhoto(i);const f=pr.fr;if(f&&SEENFR[p.peer]!=f.t){SEENFR[p.peer]=f.t;if(f.to==myPeer&&sc5=='CELL')openCell();if(mp.host&&f.to[0]=='b'){const b=BOTS[+f.to.slice(1)];if(b&&b.s){b.s=0;b.x=441;b.z=14}}}})}
-async function mpHost(){const code=Math.random().toString(36).slice(2,6);$('mps').textContent='กำลังเชื่อมต่อเซิร์ฟเวอร์...';try{RM=await roomNS.join('bat-'+code)}catch(e){$('mps').textContent=wsErr(e);return}mp={host:1,code,bots:0};mpWire();RM.presence({r:'host'}).catch(()=>{});mpRender()}
-async function mpJoin(){const code=($('mpc').value||'').trim().toLowerCase();if(!/^[a-z0-9]{4}$/.test(code)){$('mps').textContent='โค้ดต้องเป็นตัวอักษร/ตัวเลข 4 ตัว';return}$('mps').textContent='กำลังเชื่อมต่อเซิร์ฟเวอร์...';try{RM=await roomNS.join('bat-'+code)}catch(e){$('mps').textContent=wsErr(e);return}mp={host:0,code,bots:0};mpWire();RM.presence({r:'guest'}).catch(()=>{});mpRender()}
-function mpWire(){RM.onPeers(()=>{const me=RM.peers().find(p=>p.isMe&&p.sameTab);if(me)myPeer=me.peer;mpRender();const hp=RM.peers().find(p=>p.presence.r=='host');if(hp&&hp.presence.go&&!mpStarted&&!mp.host)mpBegin(hp.presence.go.b)})}
-function mpStart(){if(!mp||!mp.host||mpStarted)return;RM.presence({go:{b:mp.bots,t:Date.now()}}).catch(()=>{});mpBegin(mp.bots)}
-function mpBegin(b){mpStarted=1;mp.bots=b;$('mp').style.display='none';$('start').style.display='none';$('end').style.display='none';started=1;lock=1;chap(ch5Init)}
-function mpOpen(){$('mp').style.display='flex';mpRender()}
-function mpClose(){$('mp').style.display='none'}
-function mpRender(){const b=$('mpb'),s=$('mps');b.innerHTML='';const bt=(t,f)=>{const x=document.createElement('button');x.textContent=t;x.onclick=f;b.appendChild(x);return x};
-if(!RM){s.textContent='เล่นด้วยกันในตอนที่ 5 (โรงเรียน): เพื่อนช่วยปลดล็อคห้องขังได้ เชิญบอทได้ — ต้อง Host server ก่อนถึงจะเล่นได้';const u=document.createElement('input');u.id='mpu';u.placeholder='ที่อยู่เซิร์ฟเวอร์ wss://... (เว้นว่าง = เซิร์ฟเวอร์เดียวกับหน้าเว็บนี้)';try{u.value=localStorage.getItem('batWS')||''}catch(e){}b.appendChild(u);bt('🖥 Host server (สร้างห้อง)',mpHost);const i=document.createElement('input');i.id='mpc';i.placeholder='โค้ดเซิร์ฟเวอร์ 4 ตัว';i.maxLength=4;b.appendChild(i);bt('🔑 เข้าร่วมด้วยโค้ด',mpJoin);return}
-const ps=RM.peers(),hp=ps.find(p=>p.presence.r=='host');s.textContent=(mp.host?'🖥 คุณเป็น Host · โค้ดเซิร์ฟเวอร์: ':'🔑 เข้าร่วมโค้ด ')+mp.code+' · ผู้เล่น '+ps.length+' คน'+(mp.host?' · บอท '+mp.bots+' ตัว':'')+(hp?'':' · ⚠ ยังไม่พบ Host ในโค้ดนี้');
-if(mp.host){bt('🤖 บอท: '+mp.bots+'  (กดเพื่อเพิ่ม 0→3)',()=>{mp.bots=(mp.bots+1)%4;mpRender()});bt('▶ เริ่มเกม (ตอนที่ 5)',mpStart)}else bt('⏳ รอ Host กดเริ่มเกม...',()=>{})}
+function mpSend(){if(!RM)return;const r={x:+P.x.toFixed(2),z:+P.z.toFixed(2),y:+yaw.toFixed(2),c:c5&&sc5=='CELL'?1:0,h:lh>=0?1:0,k:kc,pm:mask(),ch:curCh,g1:g1,evm:evm,dmm:dmm,cmm:cmm,exo:exo,r:mp.host?'host':'guest'};
+if(mp.host&&c5){r.T=[+gh.position.x.toFixed(1),+gh.position.z.toFixed(1),+gh.rotation.y.toFixed(2)];r.B=BOTS.map(b=>[+b.x.toFixed(1),+b.z.toFixed(1),+(b.yaw||0).toFixed(2),b.s]);if(hostFr&&hostFr.to!='me')r.fr=hostFr}if(myFr)r.fr=myFr;RM.presence(r).catch(()=>{})}
+function mpScan(){const ps=RM.peers();if(curCh=='1')ch1Gate();ps.forEach(p=>{if(p.isMe)return;const pr=p.presence;if(c5&&pr.pm!=null)for(let i=0;i<7;i++)if((pr.pm>>i)&1)setPhoto(i);mpShare(pr,p);const f=pr.fr;if(f&&SEENFR[p.peer]!=f.t){SEENFR[p.peer]=f.t;if(f.to==myPeer&&sc5=='CELL')openCell();if(mp.host&&f.to[0]=='b'){const b=BOTS[+f.to.slice(1)];if(b&&b.s){b.s=0;b.x=441;b.z=14}}}})}
 function WSURL(){const e=$('mpu');let u=e?e.value.trim():'';if(e){try{localStorage.setItem('batWS',u)}catch(x){}}else{try{u=localStorage.getItem('batWS')||''}catch(x){}}
 const pr=location.protocol=='https:'?'wss://':'ws://';if(!u)return pr+location.host+'/ws';const U=new URL(/^wss?:\/\//.test(u)?u:pr+u.replace(/^https?:\/\//,''));if(!U.pathname||U.pathname=='/')U.pathname='/ws';return U.toString()}
-function wsErr(e){const c=e&&e.code;return c=='full'?'ห้องเต็มแล้ว (สูงสุด 8 คน)':c=='badroom'?'โค้ดห้องไม่ถูกต้อง':'เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ — ตรวจที่อยู่เซิร์ฟเวอร์ หรือรอสักครู่ถ้าเซิร์ฟเวอร์ Render เพิ่งตื่น (ครั้งแรกอาจใช้เวลา 30–60 วินาที) แล้วลองใหม่'}
-const WSNS={join(name){return new Promise((resolve,reject)=>{let ws;try{ws=new WebSocket(WSURL())}catch(e){reject({code:'connect'});return}
+function wsErr(e){const c=e&&e.code;return c=='full'?'ห้องเต็มแล้ว (สูงสุด 8 คน)':c=='badroom'?'โค้ดห้องไม่ถูกต้อง':c=='noroom'?'ไม่พบห้องนี้ (โค้ดผิด หรือ Host ยังไม่ได้สร้างห้อง)':c=='banned'?'🚫 คุณถูกเตะออกจากห้องนี้แล้ว เข้าร่วมอีกไม่ได้':'เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ — ตรวจที่อยู่เซิร์ฟเวอร์ หรือรอสักครู่ถ้าเซิร์ฟเวอร์ Render เพิ่งตื่น (ครั้งแรกอาจใช้เวลา 30–60 วินาที) แล้วลองใหม่'}
+const CID=(()=>{try{let c=localStorage.getItem('batCID');if(!c){c=Math.random().toString(36).slice(2,10);localStorage.setItem('batCID',c)}return c}catch(e){return Math.random().toString(36).slice(2,10)}})();
+const WSNS={join(name,o){o=o||{};return new Promise((resolve,reject)=>{let ws;try{ws=new WebSocket(o.url||WSURL())}catch(e){reject({code:'connect'});return}
 const peers=new Map();let myId='',cbs=[],opened=false;const mine={},t0=Date.now();
 const room={peers:()=>[...peers.entries()].map(([id,p])=>({peer:id,isMe:id==myId,sameTab:id==myId,presence:p})),
 presence(patch){Object.assign(mine,patch);const me=peers.get(myId);if(me)Object.assign(me,patch);if(ws.readyState==1)ws.send(JSON.stringify({t:'p',p:patch}));return Promise.resolve()},
+kick(peer){if(ws.readyState==1)ws.send(JSON.stringify({t:'kick',peer}))},setMeta(pub,meta){if(ws.readyState==1)ws.send(JSON.stringify({t:'meta',pub:!!pub,meta}))},
 onPeers(cb){cbs.push(cb);return()=>{cbs=cbs.filter(x=>x!=cb)}},leave(){try{ws.close()}catch(e){}}};
 const fire=()=>cbs.forEach(f=>{try{f(room.peers())}catch(e){}});
 const chk=setInterval(()=>{if(opened)return;if(Date.now()-t0>60000){clearInterval(chk);try{ws.close()}catch(e){}reject({code:'timeout'})}},1000);
 const hb=setInterval(()=>{if(ws.readyState==1)ws.send('{"t":"ping"}')},20000);
-ws.onopen=()=>ws.send(JSON.stringify({t:'join',room:name}));
+ws.onopen=()=>ws.send(JSON.stringify({t:'join',room:name,host:!!o.host,pub:!!o.pub,meta:o.meta||{},cid:CID}));
 ws.onmessage=ev=>{let m;try{m=JSON.parse(ev.data)}catch(e){return}
 if(m.t=='snap'){myId=m.id;peers.clear();m.list.forEach(x=>peers.set(x.peer,x.p||{}));if(!peers.has(myId))peers.set(myId,{...mine});opened=true;clearInterval(chk);resolve(room);fire()}
 else if(m.t=='p'){const q=peers.get(m.peer)||{};Object.assign(q,m.p);peers.set(m.peer,q);fire()}
 else if(m.t=='left'){peers.delete(m.peer);fire()}
+else if(m.t=='kicked'){mpKicked()}else if(m.t=='closed'){mpClosed()}
 else if(m.t=='err'){clearInterval(chk);reject({code:m.code})}};
 ws.onerror=()=>{if(!opened){clearInterval(chk);reject({code:'connect'})}};
-ws.onclose=()=>{clearInterval(hb);clearInterval(chk);if(opened){peers.clear();fire();say('⚠ ขาดการเชื่อมต่อจากเซิร์ฟเวอร์',5000)}else reject({code:'connect'})}})}};
+ws.onclose=()=>{clearInterval(hb);clearInterval(chk);if(opened){peers.clear();fire()}else reject({code:'connect'})}})},
+list(url){return new Promise(resolve=>{let ws,t0=0,done=false,ck;const fin=r=>{if(done)return;done=true;clearInterval(ck);try{ws.close()}catch(e){}resolve(r)};try{ws=new WebSocket(url)}catch(e){resolve(null);return}
+const st=Date.now();ck=setInterval(()=>{if(Date.now()-st>8000)fin(null)},500);
+ws.onopen=()=>{t0=Date.now();ws.send('{"t":"list"}')};ws.onmessage=ev=>{let m;try{m=JSON.parse(ev.data)}catch(e){return}if(m.t=='rooms')fin({ping:Date.now()-t0,name:m.name,rooms:m.list,url})};ws.onerror=()=>fin(null);ws.onclose=()=>fin(null)})}};
 roomNS=WSNS;
+// ---- ล็อบบี้ / เซิร์ฟเวอร์ ----
+const mpOn=()=>!!(mp&&mpStarted&&RM&&RM.peers().length>1);
+const pName=id=>'ผู้เล่น '+(RM.peers().map(p=>p.peer).sort().indexOf(id)+1);
+const makePre4=()=>({code:[0,0,0,0].map(()=>1+Math.floor(Math.random()*9)),thin:Math.floor(Math.random()*5)});
+async function mpHost(){const code=Math.random().toString(36).slice(2,6),title=($('mpt')&&$('mpt').value.trim())||'ห้องของ Host',pub=!!($('mpv')&&$('mpv').value=='1');$('mps').textContent='กำลังเชื่อมต่อเซิร์ฟเวอร์...';
+try{RM=await roomNS.join('bat-'+code,{host:1,pub,meta:{name:title,ch:'',started:0,bots:0}})}catch(e){$('mps').textContent=wsErr(e);return}
+mp={host:1,code,bots:0,pub,title,start:'1'};mpWire();RM.presence({r:'host'}).catch(()=>{});mpRender()}
+async function mpJoin(url,code){code=(code||'').trim().toLowerCase();if(!/^[a-z0-9]{4}$/.test(code)){$('mps').textContent='โค้ดต้องเป็นตัวอักษร/ตัวเลข 4 ตัว';return}$('mps').textContent='กำลังเชื่อมต่อเซิร์ฟเวอร์...';
+try{RM=await roomNS.join('bat-'+code,{url})}catch(e){$('mps').textContent=wsErr(e);return}mp={host:0,code,bots:0};mpWire();RM.presence({r:'guest'}).catch(()=>{});mpRender()}
+function mpWire(){RM.onPeers(()=>{const me=RM.peers().find(p=>p.isMe);if(me)myPeer=me.peer;mpRender();const hp=RM.peers().find(p=>p.presence.r=='host'),g=hp&&hp.presence.go;
+if(g&&!mp.host){if(!mpStarted){mp.lastN=g.n;mpBegin(g)}else if(g.n!==mp.lastN){mp.lastN=g.n;mpRun(g)}}})}
+function mpStart(){if(!mp||!mp.host||mpStarted)return;const c=$('mpch')?$('mpch').value:mp.start||'1';mpN++;const g={c,n:mpN,b:mp.bots,h:0};if(c[0]=='4'){g.p4=pre4=makePre4()}mpStarted=1;RM.presence({go:g}).catch(()=>{});RM.setMeta(mp.pub,{name:mp.title,ch:c,started:1,bots:mp.bots});mpBegin(g)}
+function mpBegin(g){mpStarted=1;mp.bots=g.b||0;$('mp').style.display='none';$('start').style.display='none';$('end').style.display='none';started=1;lock=1;mpRun(g)}
+function mpAnn(id,o){if(mp&&mp.host&&mpStarted&&!mpF&&RM){mpN++;RM.presence({go:Object.assign({c:id,n:mpN,b:mp.bots},o||{})}).catch(()=>{});RM.setMeta(mp.pub,{name:mp.title,ch:id,started:1,bots:mp.bots})}}
+function mpBlock(){if(mp&&mpStarted&&!mp.host&&!mpF){say('รอ Host เริ่มตอนถัดไป...',2500);return true}return false}
+function mpRun(g){mpF=1;try{const c=g.c;if(c=='1')$('go').onclick();else if(c=='2')ch2();else if(c=='3A')chap(ch3A);else if(c=='3B')chap(ch3B);else if(c=='4H'||c=='4T'){c4v=c[1];window._v=c4v;hard=g.h||0;pre4=g.p4||null;chap(ch4Start)}else if(c=='5')chap(ch5Init);else if(c=='6')chap(ch6Init)}finally{mpF=0}}
+function mpGone(msg){mpStarted=0;try{RM&&RM.leave()}catch(e){}RM=null;mp=null;$('mp').style.display='flex';$('mps').textContent=msg;$('mpb').innerHTML='';const k=setInterval(()=>{clearInterval(k);location.reload()},3000)}
+function mpKicked(){mpGone('🚫 คุณถูก Host เตะออกจากห้อง (กำลังรีเฟรชหน้า...)')}
+function mpClosed(){mpGone('ห้องถูกปิดเพราะ Host ออกจากเกม (กำลังรีเฟรชหน้า...)')}
+function mpOpen(){$('mp').style.display='flex';mpRender()}
+function mpClose(){$('mp').style.display='none'}
+async function mpSearch(){const box=$('mpr');box.textContent='🔎 กำลังค้นหาเซิร์ฟเวอร์ใกล้เคียง...';const urls=new Map();urls.set(WSURL(),'เซิร์ฟเวอร์นี้');
+try{const r=await fetch('/servers');if(r.ok)(await r.json()).forEach(x=>urls.set(x.url,x.name||x.url))}catch(e){}
+try{JSON.parse(localStorage.getItem('batSV')||'[]').forEach(u=>urls.set(u,u))}catch(e){}
+const res=(await Promise.all([...urls].map(async([u,n])=>{const r=await WSNS.list(u);return r&&{...r,label:n}}))).filter(Boolean).sort((a,b)=>a.ping-b.ping);
+box.innerHTML='';if(!res.length){box.textContent='ไม่พบเซิร์ฟเวอร์ที่ตอบสนอง';return}
+res.forEach((r,i)=>{const h=document.createElement('div');h.style.cssText='margin-top:6px;color:#9fe';h.textContent=(i==0?'⚡ ':'🖥 ')+r.label+' · '+r.ping+' ms'+(i==0?' (ใกล้ที่สุด)':'')+' · ห้องสาธารณะ '+r.rooms.length+' ห้อง';box.appendChild(h);
+r.rooms.forEach(m=>{const b=document.createElement('button');b.style.marginTop='4px';b.textContent='🌐 '+m.name+' · '+m.players+'/'+m.max+' คน'+(m.started?' · กำลังเล่น (ตอน '+m.ch+')':' · รออยู่ในล็อบบี้')+' — เข้าร่วม';b.onclick=()=>mpJoin(r.url,m.room.slice(4));box.appendChild(b)})})}
+function mpRender(){if($('mp').style.display!='flex')return;const b=$('mpb'),s=$('mps');b.innerHTML='';
+const bt=(t,f)=>{const x=document.createElement('button');x.textContent=t;x.onclick=f;b.appendChild(x);return x},lb=t=>{const d=document.createElement('div');d.style.cssText='color:#d9b36a;margin-top:6px';d.textContent=t;b.appendChild(d)};
+if(!RM){s.textContent='เล่นด้วยกันได้ทุกตอน (1–6) — ต้อง Host server ก่อนถึงจะเล่นมัลติเพลเยอร์ได้ หรือค้นหา/เข้าร่วมห้องของเพื่อน';
+const u=document.createElement('input');u.id='mpu';u.placeholder='ที่อยู่เซิร์ฟเวอร์ wss://... (เว้นว่าง = เซิร์ฟเวอร์เดียวกับหน้าเว็บนี้)';try{u.value=localStorage.getItem('batWS')||''}catch(e){}b.appendChild(u);
+bt('🔎 ค้นหาเซิร์ฟเวอร์ใกล้เคียง (ห้องสาธารณะ)',mpSearch);const r=document.createElement('div');r.id='mpr';b.appendChild(r);
+bt('➕ เพิ่มที่อยู่นี้ในรายการค้นหา',()=>{const x=WSURL();try{const l=JSON.parse(localStorage.getItem('batSV')||'[]');if(!l.includes(x))l.push(x);localStorage.setItem('batSV',JSON.stringify(l));$('mps').textContent='เพิ่มแล้ว: '+x}catch(e){}});
+lb('— Host server —');const t=document.createElement('input');t.id='mpt';t.placeholder='ชื่อห้อง (ไม่บังคับ)';t.maxLength=30;b.appendChild(t);
+const v=document.createElement('select');v.id='mpv';[['0','🔒 ส่วนตัว (เข้าได้ด้วยโค้ดเท่านั้น)'],['1','🌐 สาธารณะ (แสดงในผลค้นหา)']].forEach(([x,y])=>{const o=document.createElement('option');o.value=x;o.textContent=y;v.appendChild(o)});b.appendChild(v);bt('🖥 Host server (สร้างห้อง)',mpHost);
+lb('— เข้าร่วมด้วยโค้ด —');const i=document.createElement('input');i.id='mpc';i.placeholder='โค้ดห้อง 4 ตัว';i.maxLength=4;b.appendChild(i);bt('🔑 เข้าร่วมด้วยโค้ด',()=>mpJoin(null,$('mpc').value));return}
+const ps=RM.peers(),hp=ps.find(p=>p.presence.r=='host'),ids=ps.map(p=>p.peer).sort();
+s.textContent=(mp.host?'🖥 คุณเป็น Host':'🔑 ห้อง')+' · โค้ด '+mp.code+' · '+(mp.pub?'🌐 สาธารณะ':'🔒 ส่วนตัว')+' · '+ps.length+' คน'+(mpStarted?' · กำลังเล่น (ตอน '+curCh+')':' · ล็อบบี้')+(hp?'':' · ⚠ ยังไม่พบ Host');
+ps.forEach(p=>{const row=document.createElement('div');row.style.cssText='display:flex;gap:8px;align-items:center;justify-content:space-between';const nm=document.createElement('span');nm.textContent=(p.presence.r=='host'?'👑 ':'👤 ')+'ผู้เล่น '+(ids.indexOf(p.peer)+1)+(p.isMe?' (คุณ)':'')+(p.presence.ch?' · ตอน '+p.presence.ch:'');row.appendChild(nm);
+if(mp.host&&!p.isMe){const k=document.createElement('button');k.textContent='🚫 เตะ';k.onclick=()=>RM.kick(p.peer);row.appendChild(k)}b.appendChild(row)});
+if(mp.host){bt(mp.pub?'🌐 สาธารณะ — กดเพื่อเปลี่ยนเป็นส่วนตัว':'🔒 ส่วนตัว — กดเพื่อเปลี่ยนเป็นสาธารณะ',()=>{mp.pub=!mp.pub;RM.setMeta(mp.pub,{name:mp.title,ch:curCh||mp.start||'1',started:mpStarted?1:0,bots:mp.bots});mpRender()});
+if(!mpStarted){bt('🤖 บอท (เล่นได้เฉพาะตอนที่ 5): '+mp.bots+' ตัว — กดเพื่อเพิ่ม 0→3',()=>{mp.bots=(mp.bots+1)%4;RM.setMeta(mp.pub,{name:mp.title,ch:'',started:0,bots:mp.bots});mpRender()});
+lb('เริ่มเล่นจากตอน:');const sel=document.createElement('select');sel.id='mpch';[['1','ตอนที่ 1'],['2','ตอนที่ 2'],['3A','ตอนที่ 3 (ทางบ้าน)'],['3B','ตอนที่ 3 (ทางโรงแรม)'],['4H','ตอนที่ 4 (ทางบ้าน)'],['4T','ตอนที่ 4 (ทางโรงแรม)'],['5','ตอนที่ 5'],['6','ตอนที่ 6']].forEach(([x,y])=>{const o=document.createElement('option');o.value=x;o.textContent=y;sel.appendChild(o)});sel.value=mp.start||'1';sel.onchange=()=>{mp.start=sel.value};b.appendChild(sel);bt('▶ เริ่มเกม',mpStart)}}
+else if(!mpStarted)bt('⏳ รอ Host กดเริ่มเกม...',()=>{});
+bt('🚪 ออกจากห้อง',()=>{try{RM.leave()}catch(e){}location.reload()})}
+
+function mpTick(dt){psT-=dt;if(psT<0){psT=.12;mpSend();mpScan()}avSync(dt)}
+const callSeen={};
+function ranatStart(){lock=1;rmode=1;mi=0;playSong(0);setTimeout(endPlay,SONG_LEN*1000);say('คุณหยิบไม้ระนาด... เสียง “ค้างคาวกินกล้วย” ก้องไปทั้งห้อง',5000)}
+function ranatGate(){if(g1==0){g1=1;gt1=Date.now();say('🔔 เรียกเพื่อนที่ยังไม่ได้เล่นระนาดแล้ว... รอให้ทุกคนมาพร้อมกัน (กด E อีกครั้งหลัง 15 วินาทีเพื่อเริ่มเลย)',6500);ch1Gate()}else if(g1==1&&Date.now()-gt1>15000){g1=2;ranatStart()}else say('⏳ รอเพื่อนมาเล่นระนาดพร้อมกัน...',2500)}
+function sleepGate(){if(g1<3){g1=3;gt1=Date.now();say('🛏 รอเพื่อนมานอนพร้อมกัน... (กด E อีกครั้งหลัง 15 วินาทีเพื่อนอนเลย)',6500);ch1Gate()}else if(g1==3&&Date.now()-gt1>15000){g1=4;sleep()}else say('⏳ รอเพื่อนมานอนพร้อมกัน...',2500)}
+function ch1Gate(){if(!RM)return;const ps=RM.peers().filter(p=>p.isMe||p.presence.ch=='1');
+if(g1==1&&ps.every(p=>p.isMe||(p.presence.g1||0)>=1)){g1=2;ranatStart()}
+if(g1==3&&ps.every(p=>p.isMe||(p.presence.g1||0)>=3)){g1=4;sleep()}}
+function ch1Notify(pr,p){const v=pr.g1||0;if(callSeen[p.peer]===v)return;callSeen[p.peer]=v;if(v==1&&g1==0&&st==0)say('🔔 '+pName(p.peer)+' ต้องการเล่นระนาด! ไปที่ห้องระนาด (ซ้ายมือ) แล้วกด E เพื่อเล่นพร้อมกัน',6000);if(v==3&&g1<3&&st==1)say('🔔 '+pName(p.peer)+' ต้องการนอน! ไปที่ห้องนอนแล้วกด E เพื่อนอนพร้อมกัน',6000)}
+function mpShare(pr,p){if(pr.ch!=curCh)return;
+if(pr.evm&&(c3=='A1'||c3=='A2'))for(let i=0;i<3;i++)if((pr.evm>>i)&1&&!evd[i]){evd[i]=1;ev++;evm|=1<<i;evTxt();say('เพื่อนพบหลักฐานชิ้นที่ '+(i+1)+' แล้ว',3000);if(ev>=3){c3='A2';obj('ได้หลักฐานครบแล้ว! ขึ้นไปชั้นบนแล้วเข้านอนที่ห้องนอน')}}
+if(pr.dmm&&c4&&c4!='K1')for(let i=0;i<DM.length;i++)if((pr.dmm>>i)&1&&!DM[i].got){DM[i].got=1;DM[i].m.visible=false}
+if(pr.cmm&&(c4=='K3'||c4=='K4'))for(let i=0;i<4;i++)if((pr.cmm>>i)&1&&!caseGot[i]){caseGot[i]=1;cmm|=1<<i;CS[i].visible=false;c4hud();say('เพื่อนเปิดเคสที่ '+(i+1)+' แล้ว — รหัสหลักที่ '+(i+1)+' คือ '+code[i],4500)}
+if(pr.exo&&c4=='K3'&&!exOpen){exOpen=1;exCol.off=1;c4='K4';gSp=2.4;say('เพื่อนเปิดประตูทางออกแล้ว! วิ่ง!',3500)}
+if(curCh=='1')ch1Notify(pr,p)}
 function c5Tick(dt){if(!sc5)return;mmT-=dt;if(mmT<0){mmT=.3;drawPhone5()}
 PHM.forEach(m=>{if(m.visible)m.rotation.y+=dt});
 if(!mp||mp.host){teachTick(dt);if(mp)botTick(dt)}else if(RM){const hp=RM.peers().find(p=>p.presence.r=='host');if(hp&&hp.presence.T){const q=hp.presence.T,k=Math.min(1,dt*8);gh.position.x+=(q[0]-gh.position.x)*k;gh.position.z+=(q[1]-gh.position.z)*k;gh.rotation.y=q[2]}}
@@ -670,7 +728,7 @@ if(sc5=='S1'&&dist(P.x,P.z,gh.position.x,gh.position.z)<(lh>=0?.7:1.0))caught5()
 if(sc5=='S1'&&cellCol.off&&barsDoor.position.y<4.4)barsDoor.position.y+=dt*3;
 lpTick(dt);
 if(resT>0){if(dist(P.x,P.z,440.5,13.3)>2.5||sc5!='S1')resT=0;else{resT-=dt;if(resT<=0){myFr={to:resId,t:Date.now()};say('ปลดล็อคให้เพื่อนแล้ว!',2500);if(mp&&mp.host&&resId[0]=='b'){const b=BOTS[+resId.slice(1)];if(b){b.s=0;b.x=441;b.z=14}}}}}
-if(mp&&RM){psT-=dt;if(psT<0){psT=.12;mpSend();mpScan()}avSync(dt)}}
+}
 
 
 // ===== ตอนที่ 6 : เพลงที่ไม่เคยจบ (ตอนจบ) =====
@@ -681,8 +739,8 @@ const DL6=[{n:'',t:'คุณกลับมาที่บ้านครูท
 {n:'พิม',t:'เพราะเมื่อเพลงจบ ผู้เล่นต้องไปจากโลกนี้ ครูไม่อยากให้ฉันไป เลยผูกฉันไว้กับโน้ตตัวสุดท้ายที่ไม่เคยถูกตี'},
 {n:'พิม',t:'วันนี้คุณมีสามทาง... เล่นเพลงให้จบเพื่อปล่อยฉันไป ทุบระนาดให้พังทั้งหมด หรือเดินออกไปแล้วปล่อยให้ฉันเล่นต่อไปตลอดกาล'},
 {n:'',t:'ลูกระนาดลูกที่สิบเอ็ดเรืองแสงสีทอง เหมือนกำลังรอไม้ตีของคุณ...'}];
-function ch6go(){$('end').style.display='none';chap(ch6Init)}
-function ch6Init(){st=99;c3='Z';c4=0;c5=0;c6=1;chose=7;HP=100;carry=0;rgOn=0;['c4h','hpw','tor'].forEach(i=>$(i).style.display='none');phG.visible=false;axeG.visible=false;gunG.visible=false;
+function ch6go(){if(mpBlock())return;mpAnn('6');$('end').style.display='none';chap(ch6Init)}
+function ch6Init(){curCh='6';st=99;c3='Z';c4=0;c5=0;c6=1;chose=7;HP=100;carry=0;rgOn=0;['c4h','hpw','tor'].forEach(i=>$(i).style.display='none');phG.visible=false;axeG.visible=false;gunG.visible=false;
 RANAT1.visible=true;bars.forEach(b=>b.position.y=b.userData.y);setL('A',1);flk=1;batMode='A';P.x=-4.6;P.z=-2;P.y=baseY=1.6;yaw=Math.PI/2;pitch=-.2;gh.position.set(-6.7,0,-2);gh.rotation.y=Math.PI/2;gh.visible=true;
 clkShow('🎼 ตอนที่ 6 · เพลงที่ไม่เคยจบ');startDlg(DL6,()=>{lock=1;showC6('เลือกทางสุดท้ายของคุณ')})}
 function showC6(m){$('c6p').textContent=m;$('c6a').disabled=!has.axe;$('c6a').textContent=has.axe?'🪓 ทุบระนาดให้พังด้วยขวาน':'🪓 ทุบระนาดด้วยขวาน (ไม่ได้เก็บขวานมา)';$('c6').style.display='flex'}
