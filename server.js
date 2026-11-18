@@ -1,89 +1,83 @@
+// server.js — เซิร์ฟเวอร์เกม "ค้างคาวกินกล้วย" (เสิร์ฟหน้าเว็บ + WebSocket มัลติเพลเยอร์)
+// รันบน Render: Build = npm install, Start = npm start
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
-const WebSocket = require('ws');
-const { exec } = require('child_process'); // ใช้สำหรับสั่งเปิดเบราว์เซอร์
+const { WebSocketServer } = require('ws');
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 3000;
+const MAX_PEERS = 8;          // ผู้เล่นสูงสุดต่อห้อง
+const MAX_PRESENCE = 4096;    // ขนาดข้อมูลสถานะต่อผู้เล่น (ไบต์)
+const INDEX = path.join(__dirname, 'index.html');
 
-// 1. สร้าง HTTP Server เพื่อเสิร์ฟไฟล์หน้าเว็บ (HTML และ Client.js)
 const server = http.createServer((req, res) => {
-    // ถ้าเข้าหน้าแรก ให้โหลดไฟล์ index.html
-    let filePath = req.url === '/' ? './index.html' : '.' + req.url;
-    let extname = path.extname(filePath);
-    let contentType = 'text/html';
-
-    // กำหนด Content-Type ให้ถูกต้องตามประเภทไฟล์
-    switch (extname) {
-        case '.js': contentType = 'text/javascript'; break;
-        case '.css': contentType = 'text/css'; break;
-        case '.json': contentType = 'application/json'; break;
-        case '.png': contentType = 'image/png'; break;
-        case '.jpg': contentType = 'image/jpg'; break;
-    }
-
-    // อ่านและส่งไฟล์ไปแสดงบนเบราว์เซอร์
-    fs.readFile(filePath, (error, content) => {
-        if (error) {
-            if(error.code == 'ENOENT') {
-                res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
-                res.end('<h2>ไม่พบไฟล์ที่คุณต้องการ (404)</h2>');
-            } else {
-                res.writeHead(500);
-                res.end('Server Error: ' + error.code);
-            }
-        } else {
-            res.writeHead(200, { 'Content-Type': contentType });
-            res.end(content, 'utf-8');
-        }
+  const url = (req.url || '/').split('?')[0];
+  if (url === '/healthz') { res.writeHead(200, { 'Content-Type': 'text/plain' }); return res.end('ok'); }
+  if (url === '/' || url === '/index.html') {
+    return fs.readFile(INDEX, (err, data) => {
+      if (err) { res.writeHead(500); return res.end('index.html not found'); }
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-cache' });
+      res.end(data);
     });
+  }
+  res.writeHead(404); res.end('not found');
 });
 
-// 2. ผูกระบบ WebSocket เข้ากับ HTTP Server ตัวเดียวกัน
-const wss = new WebSocket.Server({ server });
+const wss = new WebSocketServer({ server, path: '/ws', maxPayload: 8 * 1024 });
+const rooms = new Map(); // ชื่อห้อง -> Map(peerId -> { ws, p })
 
-let players = {};
+const send = (ws, o) => { if (ws.readyState === 1) ws.send(JSON.stringify(o)); };
+const broadcast = (room, o, exceptId) => { for (const [id, c] of room) if (id !== exceptId) send(c.ws, o); };
 
 wss.on('connection', (ws) => {
-    const playerId = Math.random().toString(36).substring(2, 9);
-    console.log(`[Connected] ผู้เล่นเข้าสู่ระบบ: ${playerId}`);
+  let room = null, id = null, roomName = null;
+  let count = 0, windowStart = Date.now();
+  ws.isAlive = true;
+  ws.on('pong', () => { ws.isAlive = true; });
 
-    ws.on('message', (message) => {
-        try {
-            const data = JSON.parse(message);
-            players[playerId] = data;
+  ws.on('message', (raw) => {
+    const now = Date.now();
+    if (now - windowStart > 1000) { windowStart = now; count = 0; }
+    if (++count > 60) return;                        // กันสแปม: 60 ข้อความ/วินาที
+    let m; try { m = JSON.parse(raw); } catch (e) { return; }
 
-            // ส่งข้อมูลอัปเดตให้ทุกคน
-            const payload = JSON.stringify({ type: 'SYNC_PLAYERS', players });
-            wss.clients.forEach(client => {
-                if (client.readyState === WebSocket.OPEN) {
-                    client.send(payload);
-                }
-            });
-        } catch (e) {
-            console.error("Error parsing message:", e);
-        }
-    });
+    if (m.t === 'join' && !room) {
+      const name = String(m.room || '');
+      if (!/^[a-z0-9-]{1,32}$/.test(name)) return send(ws, { t: 'err', code: 'badroom' });
+      let r = rooms.get(name);
+      if (!r) { r = new Map(); rooms.set(name, r); }
+      if (r.size >= MAX_PEERS) return send(ws, { t: 'err', code: 'full' });
+      id = Math.random().toString(36).slice(2, 8);
+      room = r; roomName = name;
+      r.set(id, { ws, p: {} });
+      send(ws, { t: 'snap', id, list: [...r].map(([k, c]) => ({ peer: k, p: c.p })) });
+      broadcast(r, { t: 'p', peer: id, p: {} }, id);
+    } else if (m.t === 'p' && room) {
+      if (!m.p || typeof m.p !== 'object') return;
+      const c = room.get(id);
+      const merged = Object.assign({}, c.p, m.p);
+      if (JSON.stringify(merged).length > MAX_PRESENCE) return;
+      c.p = merged;
+      broadcast(room, { t: 'p', peer: id, p: m.p }, id);
+    } else if (m.t === 'ping') {
+      send(ws, { t: 'pong' });
+    }
+  });
 
-    ws.on('close', () => {
-        delete players[playerId];
-        console.log(`[Disconnected] ผู้เล่นออกจากระบบ: ${playerId}`);
-        
-        const payload = JSON.stringify({ type: 'SYNC_PLAYERS', players });
-        wss.clients.forEach(client => {
-            if (client.readyState === WebSocket.OPEN) {
-                client.send(payload);
-            }
-        });
-    });
+  ws.on('close', () => {
+    if (!room) return;
+    room.delete(id);
+    broadcast(room, { t: 'left', peer: id });
+    if (!room.size) rooms.delete(roomName);
+  });
 });
 
-// 3. เริ่มรัน Server และ "สั่งเปิด Browser อัตโนมัติ"
-server.listen(PORT, () => {
-    const serverUrl = `http://localhost:${PORT}`;
-    console.log(`🚀 เซิร์ฟเวอร์กำลังรันอยู่ที่: ${serverUrl}`);
+// ping ทุก 25 วินาที กัน proxy ของ Render ตัดการเชื่อมต่อที่เงียบ
+setInterval(() => {
+  wss.clients.forEach((ws) => {
+    if (!ws.isAlive) return ws.terminate();
+    ws.isAlive = false; ws.ping();
+  });
+}, 25000);
 
-    // คำสั่งเปิดเบราว์เซอร์อัตโนมัติ (รองรับทั้ง Windows, Mac, Linux)
-    const startCommand = process.platform === 'win32' ? 'start' : process.platform === 'darwin' ? 'open' : 'xdg-open';
-    exec(`${startCommand} ${serverUrl}`);
-});
+server.listen(PORT, () => console.log('Server listening on port ' + PORT));

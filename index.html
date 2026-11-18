@@ -631,19 +631,37 @@ const mask=()=>pgot.reduce((a,v,i)=>a|(v<<i),0);
 function mpSend(){if(!RM)return;const r={x:+P.x.toFixed(2),z:+P.z.toFixed(2),y:+yaw.toFixed(2),c:sc5=='CELL'?1:0,h:lh>=0?1:0,k:kc,pm:mask(),r:mp.host?'host':'guest'};
 if(mp.host){r.T=[+gh.position.x.toFixed(1),+gh.position.z.toFixed(1),+gh.rotation.y.toFixed(2)];r.B=BOTS.map(b=>[+b.x.toFixed(1),+b.z.toFixed(1),+(b.yaw||0).toFixed(2),b.s]);if(hostFr&&hostFr.to!='me')r.fr=hostFr}if(myFr)r.fr=myFr;RM.presence(r).catch(()=>{})}
 function mpScan(){const ps=RM.peers();ps.forEach(p=>{if(p.isMe)return;const pr=p.presence;if(pr.pm!=null)for(let i=0;i<7;i++)if((pr.pm>>i)&1)setPhoto(i);const f=pr.fr;if(f&&SEENFR[p.peer]!=f.t){SEENFR[p.peer]=f.t;if(f.to==myPeer&&sc5=='CELL')openCell();if(mp.host&&f.to[0]=='b'){const b=BOTS[+f.to.slice(1)];if(b&&b.s){b.s=0;b.x=441;b.z=14}}}})}
-async function mpHost(){if(!roomNS)return;const code=Math.random().toString(36).slice(2,6);try{RM=await roomNS.join('bat-'+code)}catch(e){$('mps').textContent='สร้างเซิร์ฟเวอร์ไม่สำเร็จ ('+(e&&e.code)+')';return}mp={host:1,code,bots:0};mpWire();RM.presence({r:'host'}).catch(()=>{});mpRender()}
-async function mpJoin(){const code=($('mpc').value||'').trim().toLowerCase();if(!roomNS||!/^[a-z0-9]{4}$/.test(code)){$('mps').textContent='โค้ดต้องเป็นตัวอักษร/ตัวเลข 4 ตัว';return}try{RM=await roomNS.join('bat-'+code)}catch(e){$('mps').textContent='เข้าร่วมไม่สำเร็จ ('+(e&&e.code)+')';return}mp={host:0,code,bots:0};mpWire();RM.presence({r:'guest'}).catch(()=>{});mpRender()}
+async function mpHost(){const code=Math.random().toString(36).slice(2,6);$('mps').textContent='กำลังเชื่อมต่อเซิร์ฟเวอร์...';try{RM=await roomNS.join('bat-'+code)}catch(e){$('mps').textContent=wsErr(e);return}mp={host:1,code,bots:0};mpWire();RM.presence({r:'host'}).catch(()=>{});mpRender()}
+async function mpJoin(){const code=($('mpc').value||'').trim().toLowerCase();if(!/^[a-z0-9]{4}$/.test(code)){$('mps').textContent='โค้ดต้องเป็นตัวอักษร/ตัวเลข 4 ตัว';return}$('mps').textContent='กำลังเชื่อมต่อเซิร์ฟเวอร์...';try{RM=await roomNS.join('bat-'+code)}catch(e){$('mps').textContent=wsErr(e);return}mp={host:0,code,bots:0};mpWire();RM.presence({r:'guest'}).catch(()=>{});mpRender()}
 function mpWire(){RM.onPeers(()=>{const me=RM.peers().find(p=>p.isMe&&p.sameTab);if(me)myPeer=me.peer;mpRender();const hp=RM.peers().find(p=>p.presence.r=='host');if(hp&&hp.presence.go&&!mpStarted&&!mp.host)mpBegin(hp.presence.go.b)})}
 function mpStart(){if(!mp||!mp.host||mpStarted)return;RM.presence({go:{b:mp.bots,t:Date.now()}}).catch(()=>{});mpBegin(mp.bots)}
 function mpBegin(b){mpStarted=1;mp.bots=b;$('mp').style.display='none';$('start').style.display='none';$('end').style.display='none';started=1;lock=1;chap(ch5Init)}
 function mpOpen(){$('mp').style.display='flex';mpRender()}
 function mpClose(){$('mp').style.display='none'}
 function mpRender(){const b=$('mpb'),s=$('mps');b.innerHTML='';const bt=(t,f)=>{const x=document.createElement('button');x.textContent=t;x.onclick=f;b.appendChild(x);return x};
-if(!roomNS){s.textContent='⚠ ออนไลน์ยังไม่พร้อม: ต้องเปิดเกมจากลิงก์ในแอป/เว็บ Claude (ล็อกอินอยู่) และแชร์ลิงก์ให้เพื่อนเปิดหน้านี้พร้อมกัน';return}
-if(!RM){s.textContent='เล่นด้วยกันในตอนที่ 5 (โรงเรียน): เพื่อนช่วยปลดล็อคห้องขังได้ เชิญบอทได้ — ต้อง Host server ก่อนถึงจะเล่นได้';bt('🖥 Host server (สร้างห้อง)',mpHost);const i=document.createElement('input');i.id='mpc';i.placeholder='โค้ดเซิร์ฟเวอร์ 4 ตัว';i.maxLength=4;b.appendChild(i);bt('🔑 เข้าร่วมด้วยโค้ด',mpJoin);return}
+if(!RM){s.textContent='เล่นด้วยกันในตอนที่ 5 (โรงเรียน): เพื่อนช่วยปลดล็อคห้องขังได้ เชิญบอทได้ — ต้อง Host server ก่อนถึงจะเล่นได้';const u=document.createElement('input');u.id='mpu';u.placeholder='ที่อยู่เซิร์ฟเวอร์ wss://... (เว้นว่าง = เซิร์ฟเวอร์เดียวกับหน้าเว็บนี้)';try{u.value=localStorage.getItem('batWS')||''}catch(e){}b.appendChild(u);bt('🖥 Host server (สร้างห้อง)',mpHost);const i=document.createElement('input');i.id='mpc';i.placeholder='โค้ดเซิร์ฟเวอร์ 4 ตัว';i.maxLength=4;b.appendChild(i);bt('🔑 เข้าร่วมด้วยโค้ด',mpJoin);return}
 const ps=RM.peers(),hp=ps.find(p=>p.presence.r=='host');s.textContent=(mp.host?'🖥 คุณเป็น Host · โค้ดเซิร์ฟเวอร์: ':'🔑 เข้าร่วมโค้ด ')+mp.code+' · ผู้เล่น '+ps.length+' คน'+(mp.host?' · บอท '+mp.bots+' ตัว':'')+(hp?'':' · ⚠ ยังไม่พบ Host ในโค้ดนี้');
 if(mp.host){bt('🤖 บอท: '+mp.bots+'  (กดเพื่อเพิ่ม 0→3)',()=>{mp.bots=(mp.bots+1)%4;mpRender()});bt('▶ เริ่มเกม (ตอนที่ 5)',mpStart)}else bt('⏳ รอ Host กดเริ่มเกม...',()=>{})}
-if(window.claude&&claude.use)claude.use('room').then(r=>{roomNS=r}).catch(()=>{});
+function WSURL(){const e=$('mpu');let u=e?e.value.trim():'';if(e){try{localStorage.setItem('batWS',u)}catch(x){}}else{try{u=localStorage.getItem('batWS')||''}catch(x){}}
+const pr=location.protocol=='https:'?'wss://':'ws://';if(!u)return pr+location.host+'/ws';const U=new URL(/^wss?:\/\//.test(u)?u:pr+u.replace(/^https?:\/\//,''));if(!U.pathname||U.pathname=='/')U.pathname='/ws';return U.toString()}
+function wsErr(e){const c=e&&e.code;return c=='full'?'ห้องเต็มแล้ว (สูงสุด 8 คน)':c=='badroom'?'โค้ดห้องไม่ถูกต้อง':'เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ — ตรวจที่อยู่เซิร์ฟเวอร์ หรือรอสักครู่ถ้าเซิร์ฟเวอร์ Render เพิ่งตื่น (ครั้งแรกอาจใช้เวลา 30–60 วินาที) แล้วลองใหม่'}
+const WSNS={join(name){return new Promise((resolve,reject)=>{let ws;try{ws=new WebSocket(WSURL())}catch(e){reject({code:'connect'});return}
+const peers=new Map();let myId='',cbs=[],opened=false;const mine={},t0=Date.now();
+const room={peers:()=>[...peers.entries()].map(([id,p])=>({peer:id,isMe:id==myId,sameTab:id==myId,presence:p})),
+presence(patch){Object.assign(mine,patch);const me=peers.get(myId);if(me)Object.assign(me,patch);if(ws.readyState==1)ws.send(JSON.stringify({t:'p',p:patch}));return Promise.resolve()},
+onPeers(cb){cbs.push(cb);return()=>{cbs=cbs.filter(x=>x!=cb)}},leave(){try{ws.close()}catch(e){}}};
+const fire=()=>cbs.forEach(f=>{try{f(room.peers())}catch(e){}});
+const chk=setInterval(()=>{if(opened)return;if(Date.now()-t0>60000){clearInterval(chk);try{ws.close()}catch(e){}reject({code:'timeout'})}},1000);
+const hb=setInterval(()=>{if(ws.readyState==1)ws.send('{"t":"ping"}')},20000);
+ws.onopen=()=>ws.send(JSON.stringify({t:'join',room:name}));
+ws.onmessage=ev=>{let m;try{m=JSON.parse(ev.data)}catch(e){return}
+if(m.t=='snap'){myId=m.id;peers.clear();m.list.forEach(x=>peers.set(x.peer,x.p||{}));if(!peers.has(myId))peers.set(myId,{...mine});opened=true;clearInterval(chk);resolve(room);fire()}
+else if(m.t=='p'){const q=peers.get(m.peer)||{};Object.assign(q,m.p);peers.set(m.peer,q);fire()}
+else if(m.t=='left'){peers.delete(m.peer);fire()}
+else if(m.t=='err'){clearInterval(chk);reject({code:m.code})}};
+ws.onerror=()=>{if(!opened){clearInterval(chk);reject({code:'connect'})}};
+ws.onclose=()=>{clearInterval(hb);clearInterval(chk);if(opened){peers.clear();fire();say('⚠ ขาดการเชื่อมต่อจากเซิร์ฟเวอร์',5000)}else reject({code:'connect'})}})}};
+roomNS=WSNS;
 function c5Tick(dt){if(!sc5)return;mmT-=dt;if(mmT<0){mmT=.3;drawPhone5()}
 PHM.forEach(m=>{if(m.visible)m.rotation.y+=dt});
 if(!mp||mp.host){teachTick(dt);if(mp)botTick(dt)}else if(RM){const hp=RM.peers().find(p=>p.presence.r=='host');if(hp&&hp.presence.T){const q=hp.presence.T,k=Math.min(1,dt*8);gh.position.x+=(q[0]-gh.position.x)*k;gh.position.z+=(q[1]-gh.position.z)*k;gh.rotation.y=q[2]}}
