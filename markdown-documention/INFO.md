@@ -4,9 +4,27 @@
 📦 **ที่เก็บโปรเจกต์ GitHub:** https://github.com/iscursordub-star/khangkhaawkinklwy-nightmare/tree/main
 
 > **Note:** ต้องเปิดโหมด **Override software rendering list** เพราะถ้าเล่นแบบเปล่าๆ จะทำให้เกิดอาการ FPS ตกได้
-> 1. ไปที่ `chrome://flags`
-> 2. ค้นหาหรือ Search ว่า `Override software rendering list`
-> 3. เปลี่ยนจาก **Disabled** เป็น **Enabled** แล้วกด **Relaunch**
+
+**หากคุณใช้ Chrome ให้ทำตามขั้นตอนนี้**
+> **ขั้นตอนที่ 1.** ไปที่ `chrome://flags`
+
+> **ขั้นตอนที่ 2.** ค้นหา `Override software rendering list`
+
+> **ขั้นตอนที่ 3.** เปลี่ยนจาก **Disabled** เป็น **Enabled** แล้วกด **Relaunch**
+
+**หากคุณใช้ Edge, Brave หรือ Opera ให้ทำตามขั้นตอนนี้**
+> **ขั้นตอนที่ 1.** ไปที่ `"ชื่อเบราว์เซอร์ของคุณ"://flags` (เช่น `edge://flags`, `brave://flags`, `opera://flags`)
+
+> **ขั้นตอนที่ 2.** ค้นหา `Override software rendering list`
+
+> **ขั้นตอนที่ 3.** เปลี่ยนจาก **Disabled** เป็น **Enabled** แล้วกด **Relaunch**
+
+**หากคุณใช้ Mozilla Firefox เบราว์เซอร์นี้จะแตกต่างจาก Chrome, Edge, Brave, Opera แต่สามารถตั้งค่าได้ตามขั้นตอนนี้**
+> **ขั้นตอนที่ 1.** เปิดเมนูด้านขวาบนแล้วไปที่ **Settings** (การตั้งค่า)
+
+> **ขั้นตอนที่ 2.** เลื่อนลงไปที่ส่วน **Performance** (ประสิทธิภาพ)
+
+> **ขั้นตอนที่ 3.** เอาเครื่องหมายถูกหน้า **Use recommended performance settings** ออก แล้วติ๊กถูกที่ **Use hardware acceleration when available**
 
 ---
 
