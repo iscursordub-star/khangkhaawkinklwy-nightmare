@@ -1,5 +1,7 @@
 # 🦇 ค้างคาวกินกล้วย — บ้านระนาดผี (Khang Khao Kin Kluai - The Haunted Ranad House)
 
+![ค้างคาวกินกล้วย - บ้านระนาดผี](../asset/122654.gif)
+
 👉 **เล่นเกมออนไลน์:** https://khaangkhaawkinklwy-baanranaadphii.onrender.com/
 📦 **ที่เก็บโปรเจกต์ GitHub:** https://github.com/iscursordub-star/khangkhaawkinklwy-nightmare/tree/main
 
