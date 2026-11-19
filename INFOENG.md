@@ -4,6 +4,7 @@
 📦 **GitHub Repository:** https://github.com/iscursordub-star/khangkhaawkinklwy-nightmare/tree/main
 
 > **Note:** You must enable **Override software rendering list** in your browser; otherwise, running the game without hardware acceleration may cause significant FPS drops.
+
 If you Using Chrome **Follow By Step**
 > Step 1. Go to **chrome://flags**
 > Step 2. Search for **`Override software rendering list`**
