@@ -14,4 +14,4 @@
 ---
 # ค้าวคาวกินกล้วย — บ้านระนาดผี
 
-[กลับเข้าสู่เกมอีกครั้ง / Go back to the Game][Go Back](https://khaangkhaawkinklwy-baanranaadphii.onrender.com/)
+[กลับเข้าสู่เกมอีกครั้ง / Go back to the Game] [Go Back](https://khaangkhaawkinklwy-baanranaadphii.onrender.com/)
