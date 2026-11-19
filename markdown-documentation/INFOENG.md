@@ -1,5 +1,7 @@
 # 🦇 Khang Khao Kin Kluai — The Haunted Ranad House
 
+![Khang Khao Kin Kluai - The Haunted Ranad House](../asset/122654.gif)
+
 👉 **Play Online:** https://khaangkhaawkinklwy-baanranaadphii.onrender.com/  
 📦 **GitHub Repository:** https://github.com/iscursordub-star/khangkhaawkinklwy-nightmare/tree/main
 
