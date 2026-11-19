@@ -70,3 +70,5 @@ Hired as the night watchman for the old estate, you arrive on a pitch-black nigh
   > "You failed to find a way out of the house... The Ranad continues to play endlessly, and you have become the newest performer in the ensemble for all eternity."
 * **True Ending:**
   > "You solved every mystery and escaped the Haunted Ranad House as the music slowly fades into the first light of dawn."
+---
+⬅️ **ย้อนกลับ / Previous:** [INFOENG.md](./INFOENG.md) | ➡️ **ไฟล์ถัดไป / Next:** [WARNINGENG.md](./WARNINGENG.md)
