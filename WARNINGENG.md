@@ -37,3 +37,5 @@ Running the game without hardware acceleration enabled in your browser may resul
 ## 📌 Additional Notes
 * All characters, events, and story elements in this game are works of fiction created for entertainment purposes.
 * **Multiplayer Mode (Chapter 5)** is currently in **Beta**; minor synchronization or connection issues may occur.
+---
+⬅️ **ย้อนกลับ / Previous:** [IN-GAMEENG.md](./IN-GAMEENG.md) | 🏠 **กลับหน้าหลัก / Back to Main:** [README.md](./README.md)
