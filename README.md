@@ -10,4 +10,4 @@
 5. **[IN-GAMEENG.md](./IN-GAMEENG.md)** — Story, Events & Minigames
 6. **[WARNINGENG.md](./WARNINGENG.md)** — Content & Performance Warning
 
-👉 **ไปต่อไฟล์ถัดไป / Next File:** [IN-GAME.md](./IN-GAME.md)
+👉 **ไปต่อไฟล์ถัดไป / Next File:** [INFO.md](./INFO.md)
