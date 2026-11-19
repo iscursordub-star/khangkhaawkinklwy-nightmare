@@ -78,3 +78,5 @@ You have been hired to watch over the old master's house overnight. Tonight is p
 * **Multiplayer Mode (Beta):** Play alongside others in Chapter 5.
 
 > **Note:** Enable **Override software rendering list** in `chrome://flags` (switch from **Disabled** to **Enabled**, then **Relaunch**) to prevent FPS drops.
+---
+⬅️ **ย้อนกลับ / Previous (TH):** [WARNING.md](./WARNING.md) | ➡️ **ไฟล์ถัดไป / Next:** [IN-GAMEENG.md](./IN-GAMEENG.md)
