@@ -1,13 +1,13 @@
 ## 📚 สารบัญเอกสารโปรเจกต์ / Project Documentation
 ### 🇹🇭 ภาษาไทย (Thai Version)
-* **[INFO.md](./markdown-documention/INFO.md)** – หน้าหลักและข้อมูลภาพรวมของเกม
-* **[IN-GAME.md](./markdown-documention/IN-GAME.md)** – เนื้อเรื่อง ฉากเหตุการณ์ บทสนทนา และมินิเกม
-* **[WARNING.md](./markdown-documention/WARNING.md)** – คำเตือนเนื้อหาสยองขวัญและข้อควรระวังด้าน FPS
+* **[INFO.md](./markdown-documentation/INFO.md)** – หน้าหลักและข้อมูลภาพรวมของเกม
+* **[IN-GAME.md](./markdown-documentation/IN-GAME.md)** – เนื้อเรื่อง ฉากเหตุการณ์ บทสนทนา และมินิเกม
+* **[WARNING.md](./markdown-documentation/WARNING.md)** – คำเตือนเนื้อหาสยองขวัญและข้อควรระวังด้าน FPS
 
 ### 🇬🇧 English Version
-* **[INFOENG.md](./markdown-documention/INFOENG.md)** – Main Overview & Controls
-* **[IN-GAMEENG.md](./markdown-documention/IN-GAMEENG.md)** – Story, Events & Minigames
-* **[WARNINGENG.md](./markdown-documention/WARNINGENG.md)** – Content & Performance Warning
+* **[INFOENG.md](./markdown-documentation/INFOENG.md)** – Main Overview & Controls
+* **[IN-GAMEENG.md](./markdown-documentation/IN-GAMEENG.md)** – Story, Events & Minigames
+* **[WARNINGENG.md](./markdown-documentation/WARNINGENG.md)** – Content & Performance Warning
 
 👉 **ไปต่อไฟล์ถัดไป / Next File:** [INFO.md](./INFO.md)
 ---
