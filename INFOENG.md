@@ -5,21 +5,21 @@
 
 > **Note:** You must enable **Override software rendering list** in your browser; otherwise, running the game without hardware acceleration may cause significant FPS drops.
 
-If you Using Chrome **Follow By Step**
+If you Using Chrome **following these Steps:**
 > Step 1. Go to **chrome://flags**
 
 > Step 2. Search for **`Override software rendering list`**
 
 > Step 3. Change it from **Disabled** to **Enabled**, then click **Relaunch**
 
-If you Using Edge, Brave, Opera **Follow By Step**
+If you using Edge, Brave, Opera **following these Steps:**
 > Step 1. Go to **"Your Browser name"://flags**
 
 > Step 2. Search for **`Override software rendering list`**
 
 > Step 3. Change it from **Disabled** to **Enabled**, then click **Relaunch**
 
-If you Using Mozilla Firefox this Browser is different From Chrome, Edge, Brave, Opera But We Can found It **Follow By Step**
+If you using Mozilla Firefox this browser is different from Chrome, Edge, Brave, Opera but you can set it up by **following these Steps:**
 > Step 1. Open the top-right menu and go to **Settings**
 
 > Step 2. Scroll down to the **Performance**
