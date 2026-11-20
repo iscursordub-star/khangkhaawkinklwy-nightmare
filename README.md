@@ -3,13 +3,15 @@
 * **[INFO.md](./markdown-documentation/INFO.md)** – หน้าหลักและข้อมูลภาพรวมของเกม
 * **[IN-GAME.md](./markdown-documentation/IN-GAME.md)** – เนื้อเรื่อง ฉากเหตุการณ์ บทสนทนา และมินิเกม
 * **[WARNING.md](./markdown-documentation/WARNING.md)** – คำเตือนเนื้อหาสยองขวัญและข้อควรระวังด้าน FPS
+* **[SECURITY.md](./SECURITY.md)** – นโยบายความปลอดภัยและการแจ้งช่องโหว่
 
 ### 🇬🇧 English Version
 * **[INFOENG.md](./markdown-documentation/INFOENG.md)** – Main Overview & Controls
 * **[IN-GAMEENG.md](./markdown-documentation/IN-GAMEENG.md)** – Story, Events & Minigames
 * **[WARNINGENG.md](./markdown-documentation/WARNINGENG.md)** – Content & Performance Warning
+* **[SECURITYENG.md](./markdown-documentation/SECURITYENG.md)** – Security Policy & Vulnerability Reporting
 
-👉 **ไปต่อไฟล์ถัดไป / Next File:** [INFO.md](./INFO.md)
+👉 **ไปต่อไฟล์ถัดไป / Next File:** [INFO.md](./markdown-documentation/INFO.md)
 ---
 # ค้าวคาวกินกล้วย — บ้านระนาดผี
 
