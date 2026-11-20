@@ -10,7 +10,7 @@
 * **[IN-GAMEENG.md](./markdown-documentation/IN-GAMEENG.md)** – Story, Events & Minigames
 * **[WARNINGENG.md](./markdown-documentation/WARNINGENG.md)** – Content & Performance Warning
 * **[SECURITYENG.md](./markdown-documentation/SECURITYENG.md)**
-* 
+ 
 👉 **ไปต่อไฟล์ถัดไป / Next File:** [INFO.md](./markdown-documentation/INFO.md)
 ---
 # ค้าวคาวกินกล้วย — บ้านระนาดผี
