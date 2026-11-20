@@ -141,4 +141,15 @@ setInterval(() => {
   });
 }, 25000);
 
+
+const { spawn } = require('child_process');
+const rsBin = path.join(__dirname, 'server-rs', 'target', 'release', 'bat-banana-ws-rs');
+if (fs.existsSync(rsBin)) {
+  const rsProc = spawn(rsBin, [], {
+    env: { ...process.env, RS_PORT: process.env.RS_PORT || '4000' },
+    stdio: 'inherit',
+  });
+  rsProc.on('exit', (code) => console.log('Rust process exited with code:', code));
+}
+
 server.listen(PORT, () => console.log('Server "' + SERVER_NAME + '" listening on port ' + PORT));
