@@ -99,4 +99,14 @@ You have been hired to watch over the old master's house overnight. Tonight is p
 
 > **Note:** Enable **Override software rendering list** in `chrome://flags` (switch from **Disabled** to **Enabled**, then **Relaunch**) to prevent FPS drops.
 ---
+## Game Zones
+
+| Zone | Preview | Objective |
+| :--- | :---: | :--- |
+| **Teacher's House** | ![Teacher's House](../asset/teacher-house.png) | Navigate the dark corridor and head to the bedroom at the end of the hall |
+| **Hotel** | ![Hotel](../asset/hotel.png) | Explore the room and complete the objective to sleep on the bed in an eerie setting |
+| **Zone 13** | ![Zone 13](../asset/zone-13.png) | Restricted test zone — collect gems and find 4 cases to unlock the exit |
+| **School** | ![School](../asset/school.png) | Collect 7 memory photos while avoiding patrolling teachers and hiding in lockers |
+
+---
 ⬅️ **ย้อนกลับ / Previous (TH):** [WARNING.md](./WARNING.md) | ➡️ **ไฟล์ถัดไป / Next:** [IN-GAMEENG.md](./IN-GAMEENG.md)
